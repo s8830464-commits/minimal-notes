@@ -89,7 +89,7 @@ struct NoteDetailView: View {
                     Button("Готово") {
                         isFocused = false
                     }
-                    .fontWeight(.semibold)
+                    .font(.body.weight(.semibold))
                     .foregroundColor(.orange)
                 }
             }

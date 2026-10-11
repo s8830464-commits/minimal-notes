@@ -146,8 +146,7 @@ struct NoteRowView: View {
                         .foregroundColor(.orange)
                 }
                 Text(note.title)
-                    .font(.body)
-                    .fontWeight(.semibold)
+                    .font(.body.weight(.semibold))
                     .lineLimit(1)
             }
 
