@@ -2,13 +2,13 @@ name: NotesApp
 options:
   bundleIdPrefix: com.ivan
   deploymentTarget:
-    iOS: "16.0"
+    iOS: "15.0"
   xcodeVersion: "15.0"
 targets:
   NotesApp:
     type: application
     platform: iOS
-    deploymentTarget: "16.0"
+    deploymentTarget: "15.0"
     sources:
       - Sources
     info:
@@ -19,6 +19,7 @@ targets:
         PRODUCT_BUNDLE_IDENTIFIER: com.ivan.minimalnotes
         TARGETED_DEVICE_FAMILY: "1,2"
         SWIFT_VERSION: "5.9"
+        IPHONEOS_DEPLOYMENT_TARGET: "15.0"
         GENERATE_INFOPLIST_FILE: NO
         INFOPLIST_FILE: Resources/Info.plist
         CODE_SIGNING_ALLOWED: NO

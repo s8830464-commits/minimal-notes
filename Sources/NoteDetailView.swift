@@ -1,4 +1,16 @@
 import SwiftUI
+import UIKit
+
+// Universal Share Sheet compatible with iOS 15, 16, 17, 18
+struct ShareSheet: UIViewControllerRepresentable {
+    let activityItems: [Any]
+
+    func makeUIViewController(context: Context) -> UIActivityViewController {
+        UIActivityViewController(activityItems: activityItems, applicationActivities: nil)
+    }
+
+    func updateUIViewController(_ uiViewController: UIActivityViewController, context: Context) {}
+}
 
 struct NoteDetailView: View {
     @EnvironmentObject var viewModel: NotesViewModel
@@ -7,6 +19,9 @@ struct NoteDetailView: View {
     let noteId: UUID
 
     @State private var text: String = ""
+    @State private var isLoaded: Bool = false
+    @State private var showingShareSheet: Bool = false
+    @State private var showingDeleteAlert: Bool = false
     @FocusState private var isFocused: Bool
 
     private var currentNote: Note? {
@@ -21,32 +36,34 @@ struct NoteDetailView: View {
                 .padding(.horizontal, 16)
                 .padding(.top, 8)
                 .onChange(of: text) { newValue in
+                    guard isLoaded else { return }
                     viewModel.updateNote(id: noteId, text: newValue)
                 }
 
-            // Minimal footer with count & timestamp
             if let note = currentNote {
                 HStack {
                     Text("\(note.wordCount) слов, \(note.characterCount) симв.")
                         .font(.caption2)
-                        .foregroundColor(.tertiaryLabel)
+                        .foregroundColor(.secondary)
                     Spacer()
                     Text("Изменено: \(note.formattedDate)")
                         .font(.caption2)
-                        .foregroundColor(.tertiaryLabel)
+                        .foregroundColor(.secondary)
                 }
                 .padding(.horizontal, 20)
-                .padding(.vertical, 6)
-                .background(Color(uiColor: .systemBackground))
+                .padding(.vertical, 8)
+                .background(Color(uiColor: .secondarySystemBackground))
             }
         }
         .background(Color(uiColor: .systemBackground))
         .navigationBarTitleDisplayMode(.inline)
         .toolbar {
             ToolbarItemGroup(placement: .navigationBarTrailing) {
-                if let note = currentNote {
-                    // Share Note
-                    ShareLink(item: note.text) {
+                if currentNote != nil {
+                    // Share
+                    Button {
+                        showingShareSheet = true
+                    } label: {
                         Image(systemName: "square.and.arrow.up")
                             .foregroundColor(.orange)
                     }
@@ -55,14 +72,13 @@ struct NoteDetailView: View {
                     Button {
                         viewModel.togglePin(id: noteId)
                     } label: {
-                        Image(systemName: note.isPinned ? "pin.fill" : "pin")
+                        Image(systemName: (currentNote?.isPinned ?? false) ? "pin.fill" : "pin")
                             .foregroundColor(.orange)
                     }
 
-                    // Delete
+                    // Delete button with confirmation
                     Button(role: .destructive) {
-                        viewModel.deleteNote(id: noteId)
-                        dismiss()
+                        showingDeleteAlert = true
                     } label: {
                         Image(systemName: "trash")
                             .foregroundColor(.red)
@@ -78,9 +94,27 @@ struct NoteDetailView: View {
                 }
             }
         }
+        .sheet(isPresented: $showingShareSheet) {
+            if let note = currentNote {
+                ShareSheet(activityItems: [note.text])
+            }
+        }
+        .alert("Удалить заметку?", isPresented: $showingDeleteAlert) {
+            Button("Отмена", role: .cancel) {}
+            Button("Удалить", role: .destructive) {
+                viewModel.deleteNote(id: noteId)
+                dismiss()
+            }
+        } message: {
+            Text("Это действие нельзя будет отменить.")
+        }
         .onAppear {
             if let note = currentNote {
                 self.text = note.text
+            }
+            // Delay marking loaded so initial text binding does not trigger false updatedAt update
+            DispatchQueue.main.async {
+                self.isLoaded = true
             }
             if text.isEmpty {
                 DispatchQueue.main.asyncAfter(deadline: .now() + 0.1) {
@@ -88,12 +122,9 @@ struct NoteDetailView: View {
                 }
             }
         }
-    }
-}
-
-// Extension for tertiaryLabel compatibility across iOS versions
-extension Color {
-    static var tertiaryLabel: Color {
-        Color(uiColor: .tertiaryLabel)
+        .onDisappear {
+            viewModel.scheduleSave(immediate: true)
+            viewModel.cleanEmptyNotes()
+        }
     }
 }

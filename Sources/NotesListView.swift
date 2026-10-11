@@ -3,13 +3,26 @@ import SwiftUI
 struct NotesListView: View {
     @EnvironmentObject var viewModel: NotesViewModel
     @State private var activeNoteId: UUID?
-    @State private var showingNewNote = false
+    @State private var navigateToDetail: Bool = false
 
     var body: some View {
-        NavigationStack {
+        NavigationView {
             ZStack {
                 Color(uiColor: .systemGroupedBackground)
                     .ignoresSafeArea()
+
+                // Programmatic Navigation link for new note creation
+                NavigationLink(
+                    destination: Group {
+                        if let id = activeNoteId {
+                            NoteDetailView(noteId: id)
+                        }
+                    },
+                    isActive: $navigateToDetail
+                ) {
+                    EmptyView()
+                }
+                .hidden()
 
                 if viewModel.filteredNotes.isEmpty {
                     VStack(spacing: 12) {
@@ -26,7 +39,9 @@ struct NotesListView: View {
                         if !viewModel.pinnedNotes.isEmpty {
                             Section(header: Text("Закрепленные").font(.caption).textCase(nil)) {
                                 ForEach(viewModel.pinnedNotes) { note in
-                                    NavigationLink(value: note.id) {
+                                    NavigationLink {
+                                        NoteDetailView(noteId: note.id)
+                                    } label: {
                                         NoteRowView(note: note)
                                     }
                                     .swipeActions(edge: .leading) {
@@ -51,7 +66,9 @@ struct NotesListView: View {
                         if !viewModel.otherNotes.isEmpty {
                             Section(header: !viewModel.pinnedNotes.isEmpty ? Text("Заметки").font(.caption).textCase(nil) : nil) {
                                 ForEach(viewModel.otherNotes) { note in
-                                    NavigationLink(value: note.id) {
+                                    NavigationLink {
+                                        NoteDetailView(noteId: note.id)
+                                    } label: {
                                         NoteRowView(note: note)
                                     }
                                     .swipeActions(edge: .leading) {
@@ -78,9 +95,6 @@ struct NotesListView: View {
             }
             .navigationTitle("Заметки")
             .searchable(text: $viewModel.searchText, prompt: "Поиск")
-            .navigationDestination(for: UUID.self) { noteId in
-                NoteDetailView(noteId: noteId)
-            }
             .toolbar {
                 ToolbarItemGroup(placement: .bottomBar) {
                     Spacer()
@@ -91,7 +105,7 @@ struct NotesListView: View {
                     Button {
                         let newNote = viewModel.createNote()
                         activeNoteId = newNote.id
-                        showingNewNote = true
+                        navigateToDetail = true
                     } label: {
                         Image(systemName: "square.and.pencil")
                             .font(.title3)
@@ -99,15 +113,8 @@ struct NotesListView: View {
                     }
                 }
             }
-            .navigationDestination(isPresented: $showingNewNote) {
-                if let id = activeNoteId {
-                    NoteDetailView(noteId: id)
-                }
-            }
-            .onAppear {
-                viewModel.cleanEmptyNotes()
-            }
         }
+        .navigationViewStyle(.stack)
     }
 
     private func notesCountString(_ count: Int) -> String {

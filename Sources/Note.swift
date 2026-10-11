@@ -7,7 +7,7 @@ struct Note: Identifiable, Codable, Equatable {
     var createdAt: Date = Date()
     var updatedAt: Date = Date()
 
-    // Title is the first non-empty line of the note (just like Apple Notes)
+    // Title is the first non-empty line of the note
     var title: String {
         let lines = text.split(whereSeparator: \.isNewline).map { $0.trimmingCharacters(in: .whitespaces) }
         guard let first = lines.first(where: { !$0.isEmpty }) else {
@@ -26,7 +26,6 @@ struct Note: Identifiable, Codable, Equatable {
         return "Нет дополнительного текста"
     }
 
-    // Word and character count
     var characterCount: Int {
         text.count
     }
@@ -36,20 +35,28 @@ struct Note: Identifiable, Codable, Equatable {
         return words.count
     }
 
-    // Formatted date
+    // Static cached formatters for smooth 60/120 fps scrolling
+    private static let timeFormatter: DateFormatter = {
+        let f = DateFormatter()
+        f.dateFormat = "HH:mm"
+        return f
+    }()
+
+    private static let dateFormatter: DateFormatter = {
+        let f = DateFormatter()
+        f.locale = Locale(identifier: "ru_RU")
+        f.dateFormat = "d MMM"
+        return f
+    }()
+
     var formattedDate: String {
         let calendar = Calendar.current
         if calendar.isDateInToday(updatedAt) {
-            let formatter = DateFormatter()
-            formatter.dateFormat = "HH:mm"
-            return formatter.string(from: updatedAt)
+            return Note.timeFormatter.string(from: updatedAt)
         } else if calendar.isDateInYesterday(updatedAt) {
             return "Вчера"
         } else {
-            let formatter = DateFormatter()
-            formatter.locale = Locale(identifier: "ru_RU")
-            formatter.dateFormat = "d MMM"
-            return formatter.string(from: updatedAt)
+            return Note.dateFormatter.string(from: updatedAt)
         }
     }
 }
