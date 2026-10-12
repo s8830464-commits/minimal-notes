@@ -75,45 +75,6 @@ struct NoteSettingsView: View {
                     }
                 }
 
-                // Раздел: Ссылки для настроек
-                Section(header: Text("Ссылки для настроек"), footer: Text("Ссылки открывают системные параметры iOS или веб-страницы.")) {
-                    if let settingsUrl = URL(string: UIApplication.openSettingsURLString) {
-                        Link(destination: settingsUrl) {
-                            HStack {
-                                Label("Настройки приложения в iOS", systemImage: "gearshape")
-                                Spacer()
-                                Image(systemName: "arrow.up.right")
-                                    .font(.caption2)
-                                    .foregroundColor(.secondary)
-                            }
-                        }
-                    }
-
-                    if let textHelpUrl = URL(string: "https://support.apple.com/guide/iphone/add-and-format-text-iph4f8f4a1bb/ios") {
-                        Link(destination: textHelpUrl) {
-                            HStack {
-                                Label("Справка Apple: Ввод и форматирование", systemImage: "keyboard")
-                                Spacer()
-                                Image(systemName: "arrow.up.right")
-                                    .font(.caption2)
-                                    .foregroundColor(.secondary)
-                            }
-                        }
-                    }
-
-                    if let repoUrl = URL(string: "https://github.com/s8830464-commits/minimal-notes") {
-                        Link(destination: repoUrl) {
-                            HStack {
-                                Label("Репозиторий на GitHub", systemImage: "link")
-                                Spacer()
-                                Image(systemName: "arrow.up.right")
-                                    .font(.caption2)
-                                    .foregroundColor(.secondary)
-                            }
-                        }
-                    }
-                }
-
                 // Раздел: Информация о заметке
                 if let note = note {
                     Section(header: Text("Информация")) {
