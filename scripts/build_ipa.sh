@@ -26,7 +26,7 @@ if before != after:
 print("Application Info.plist values preserved")
 PY
 if ! device="$(python3 scripts/select_simulator.py)"; then
-  xcodebuild -downloadPlatform iOS -buildVersion "$EXPECTED_IOS_SDK"
+  python3 scripts/install_simulator.py
   device="$(python3 scripts/select_simulator.py)"
 fi
 xcodebuild -project NotesApp.xcodeproj -scheme NotesApp \
