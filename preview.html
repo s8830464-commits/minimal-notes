@@ -350,7 +350,7 @@
 
   <script>
     // State
-    let isDarkMode = true;
+    let isDarkMode = false;
     let currentNoteId = null;
     let notes = [
       {
@@ -678,6 +678,12 @@
 
     // Theme Toggle (Light / Dark)
     function applyTheme() {
+      const listTitleText = document.getElementById('listTitleText');
+      const listBottomBar = document.getElementById('listBottomBar');
+      const detailNavBar = document.getElementById('detailNavBar');
+      const editorFooter = document.getElementById('editorFooter');
+      const sheetHeaderTitle = sheetHeader ? sheetHeader.querySelector('h2') : null;
+
       if (isDarkMode) {
         document.documentElement.style.setProperty('--card-bg', '#2c2c2e');
         document.documentElement.style.setProperty('--border-color', 'rgba(255,255,255,0.08)');
@@ -685,9 +691,33 @@
         document.documentElement.style.setProperty('--text-primary', '#ffffff');
         document.documentElement.style.setProperty('--text-secondary', '#a1a1aa');
 
+        document.body.className = "bg-neutral-900 text-neutral-100 flex flex-col items-center justify-center min-h-screen p-4 sm:p-6 transition-colors duration-300";
         screen.className = "relative w-full h-full bg-[#1c1c1e] text-white rounded-[42px] overflow-hidden flex flex-col transition-colors duration-300";
+        if (listTitleText) listTitleText.className = "text-[32px] font-bold tracking-tight text-white";
+        if (searchInput) searchInput.className = "w-full bg-[#2c2c2e] text-sm text-white placeholder-neutral-400 rounded-xl pl-9 pr-3 py-2 outline-none focus:ring-1 focus:ring-orange-500 transition duration-200";
+        if (listBottomBar) listBottomBar.className = "h-16 border-t border-neutral-800/80 px-6 flex items-center justify-center bg-[#1c1c1e]/90 backdrop-blur";
+        
+        detailView.className = "screen-view detail-hidden-right absolute inset-0 z-20 bg-[#1c1c1e] text-white flex flex-col h-full";
         detailView.style.backgroundColor = '#1c1c1e';
+        if (detailNavBar) detailNavBar.className = "pt-10 px-4 pb-2 border-b border-neutral-800/80 flex items-center justify-between bg-[#1c1c1e]/95 backdrop-blur text-white";
+        if (noteTextarea) noteTextarea.className = "w-full flex-1 bg-transparent text-white placeholder-neutral-500 outline-none resize-none leading-relaxed tracking-normal font-sans transition-all duration-200";
+        if (editorFooter) editorFooter.className = "h-10 px-5 border-t border-neutral-800/80 bg-[#242426] flex items-center justify-between text-[11px] text-neutral-400 font-medium";
+
         settingsSheet.style.backgroundColor = '#2c2c2e';
+        settingsSheet.style.color = '#ffffff';
+        if (sheetHeaderTitle) sheetHeaderTitle.className = "text-base font-bold text-white";
+        if (fontStyleSelect) fontStyleSelect.className = "bg-[#2c2c2e] text-white text-xs font-medium px-2.5 py-1.5 rounded-lg outline-none border border-neutral-600 focus:border-orange-500 transition";
+
+        document.querySelectorAll('#settingsSheet .bg-\\[\\#1c1c1e\\], #settingsSheet .bg-white').forEach(el => {
+          if (el.classList.contains('divide-y') || el.classList.contains('divide-neutral-200') || el.classList.contains('divide-neutral-800')) {
+            el.className = "bg-[#1c1c1e] rounded-2xl divide-y divide-neutral-800 border border-neutral-700/40";
+          } else if (el.classList.contains('text-xs') || el.id === 'statChars') {
+            el.className = "bg-[#1c1c1e] rounded-2xl p-3.5 space-y-2 border border-neutral-700/40 text-xs";
+          } else {
+            el.className = "bg-[#1c1c1e] rounded-2xl p-3.5 space-y-3.5 border border-neutral-700/40";
+          }
+        });
+
         themeIcon.textContent = '🌙';
         themeLabel.textContent = 'Тёмная тема';
       } else {
@@ -697,9 +727,33 @@
         document.documentElement.style.setProperty('--text-primary', '#111827');
         document.documentElement.style.setProperty('--text-secondary', '#6b7280');
 
+        document.body.className = "bg-[#e5e5ea] text-neutral-900 flex flex-col items-center justify-center min-h-screen p-4 sm:p-6 transition-colors duration-300";
         screen.className = "relative w-full h-full bg-[#f2f2f7] text-neutral-900 rounded-[42px] overflow-hidden flex flex-col transition-colors duration-300";
+        if (listTitleText) listTitleText.className = "text-[32px] font-bold tracking-tight text-neutral-900";
+        if (searchInput) searchInput.className = "w-full bg-[#e3e3e8] text-sm text-neutral-900 placeholder-neutral-500 rounded-xl pl-9 pr-3 py-2 outline-none focus:ring-1 focus:ring-orange-500 transition duration-200";
+        if (listBottomBar) listBottomBar.className = "h-16 border-t border-neutral-200/80 px-6 flex items-center justify-center bg-[#f2f2f7]/90 backdrop-blur";
+        
+        detailView.className = "screen-view detail-hidden-right absolute inset-0 z-20 bg-white text-neutral-900 flex flex-col h-full";
         detailView.style.backgroundColor = '#ffffff';
+        if (detailNavBar) detailNavBar.className = "pt-10 px-4 pb-2 border-b border-neutral-200/80 flex items-center justify-between bg-white/95 backdrop-blur text-neutral-900";
+        if (noteTextarea) noteTextarea.className = "w-full flex-1 bg-transparent text-neutral-900 placeholder-neutral-400 outline-none resize-none leading-relaxed tracking-normal font-sans transition-all duration-200";
+        if (editorFooter) editorFooter.className = "h-10 px-5 border-t border-neutral-200/80 bg-[#f9f9fb] flex items-center justify-between text-[11px] text-neutral-500 font-medium";
+
         settingsSheet.style.backgroundColor = '#f2f2f7';
+        settingsSheet.style.color = '#111827';
+        if (sheetHeaderTitle) sheetHeaderTitle.className = "text-base font-bold text-neutral-900";
+        if (fontStyleSelect) fontStyleSelect.className = "bg-white text-neutral-900 text-xs font-medium px-2.5 py-1.5 rounded-lg outline-none border border-neutral-300 focus:border-orange-500 transition";
+
+        document.querySelectorAll('#settingsSheet .bg-\\[\\#1c1c1e\\], #settingsSheet .bg-white').forEach(el => {
+          if (el.classList.contains('divide-y') || el.classList.contains('divide-neutral-200') || el.classList.contains('divide-neutral-800')) {
+            el.className = "bg-white rounded-2xl divide-y divide-neutral-200 border border-neutral-200/80 shadow-sm";
+          } else if (el.classList.contains('text-xs') || el.id === 'statChars') {
+            el.className = "bg-white rounded-2xl p-3.5 space-y-2 border border-neutral-200/80 text-xs text-neutral-800 shadow-sm";
+          } else {
+            el.className = "bg-white rounded-2xl p-3.5 space-y-3.5 border border-neutral-200/80 text-neutral-800 shadow-sm";
+          }
+        });
+
         themeIcon.textContent = '☀️';
         themeLabel.textContent = 'Светлая тема';
       }
