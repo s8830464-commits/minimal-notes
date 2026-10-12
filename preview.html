@@ -239,137 +239,144 @@
   <div id="sheetBackdrop" class="sheet-backdrop hidden opacity-0 absolute inset-0 z-35 bg-black/50 backdrop-blur-[2px]"></div>
 
   <!-- ================= MODAL SHEET: ADVANCED SETTINGS ================= -->
-  <div id="settingsSheet" class="ios-sheet hidden-sheet absolute inset-x-0 bottom-0 top-[70px] z-40 bg-[#2c2c2e] rounded-t-[32px] shadow-2xl flex flex-col overflow-hidden border-t border-neutral-700/50">
+  <div id="settingsSheet" class="ios-sheet hidden-sheet absolute inset-x-0 bottom-0 top-[70px] z-40 bg-[#f2f2f7] text-black rounded-t-[32px] shadow-2xl flex flex-col overflow-hidden border-t border-neutral-300/60">
   <!-- Sheet Grabber with Drag Down Handle -->
   <div id="sheetGrabber" class="pt-3 pb-2 flex justify-center cursor-grab active:cursor-grabbing">
-   <div class="w-10 h-1.5 bg-neutral-500/60 rounded-full hover:bg-neutral-400 transition"></div>
+   <div class="w-10 h-1.5 bg-neutral-400 rounded-full hover:bg-neutral-500 transition"></div>
   </div>
 
   <!-- Sheet Header (Clean, swipe to dismiss) -->
-  <div class="px-5 py-2 flex items-center justify-between border-b border-neutral-750 cursor-pointer" id="sheetHeader">
-   <h2 class="text-base font-bold text-white">Параметры заметки</h2>
-   <span class="text-[11px] text-neutral-400 flex items-center gap-1">
+  <div class="px-5 py-2.5 flex items-center justify-between border-b border-neutral-250 cursor-pointer" id="sheetHeader">
+   <h2 class="text-base font-bold text-black">Параметры заметки</h2>
+   <span class="text-xs font-semibold text-neutral-500 flex items-center gap-1">
    <span>Смахните</span>
-   <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/></svg>
+   <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M19 9l-7 7-7-7"/></svg>
    </span>
   </div>
 
   <!-- Sheet Form Items -->
-  <div class="flex-1 overflow-y-auto px-4 py-3 space-y-4 ios-scroll text-sm">
+  <div class="flex-1 overflow-y-auto px-4 py-3.5 space-y-4 ios-scroll text-sm">
 
    <!-- Section: Typography -->
    <div>
-   <div class="text-[11px] uppercase tracking-wider text-neutral-400 font-semibold px-2 mb-1.5">Оформление текста</div>
-   <div class="bg-[#1c1c1e] rounded-2xl p-3.5 space-y-3.5 border border-neutral-700/40">
-    <!-- Font Style Selector -->
-    <div class="flex items-center justify-between">
-    <span class="text-neutral-200">Стиль шрифта</span>
-    <select id="fontStyleSelect" class="bg-[#2c2c2e] text-white text-xs font-medium px-2.5 py-1.5 rounded-lg outline-none border border-neutral-600 focus:border-neutral-700 transition">
-     <option value="sans">Стандартный</option>
-     <option value="serif">С засечками</option>
-     <option value="mono">Моноширинный</option>
-    </select>
-    </div>
-
-    <!-- Font Size Slider with Live Spring Scale -->
-    <div>
-    <div class="flex justify-between text-xs mb-1.5">
-     <span class="text-neutral-300">Размер шрифта</span>
-     <span id="fontSizeDisplay" class="text-neutral-400 font-mono font-medium">17 пт</span>
-    </div>
-    <input id="fontSizeSlider" type="range" min="14" max="28" value="17" class="w-full accent-[#3a3a3c] cursor-pointer">
-    </div>
-
-    <!-- Read Only Toggle -->
-    <div class="flex items-center justify-between pt-1 border-t border-neutral-800">
-    <div>
-     <div class="text-neutral-200 text-xs font-medium">Режим чтения</div>
-     <div class="text-[11px] text-neutral-400">Защита от случайных правок</div>
-    </div>
-    <input id="readOnlyToggle" type="checkbox" class="w-5 h-5 accent-[#3a3a3c] rounded cursor-pointer transition">
-    </div>
-   </div>
-   </div>
-
-   <!-- Section: AI (OpenRouter) -->
-   <div>
-   <div class="text-[11px] uppercase tracking-wider text-black font-semibold px-2 mb-1.5">Нейросеть (OpenRouter)</div>
-   <div class="bg-white rounded-2xl p-3.5 space-y-3 border border-neutral-200/80 shadow-sm text-neutral-800">
-    <div class="flex items-center justify-between">
-     <span class="text-xs text-black font-medium">Режим</span>
-     <select id="openRouterModeSelect" class="bg-[#f2f2f7] text-black text-xs font-medium px-2.5 py-1.5 rounded-lg outline-none border border-neutral-300 focus:border-[#3a3a3c] transition">
-      <option value="fix_errors">Исправить ошибки</option>
-      <option value="format_beautify">Оформить и структурировать</option>
-      <option value="summary">Краткая выжимка (тезисы)</option>
-     </select>
-    </div>
-
-    <div class="flex items-center justify-between">
-     <span class="text-xs text-black font-medium">Модель</span>
-     <select id="openRouterModelSelect" class="bg-[#f2f2f7] text-black text-xs font-medium px-2.5 py-1.5 rounded-lg outline-none border border-neutral-300 focus:border-[#3a3a3c] transition">
-      <option value="nvidia/nemotron-3-super-120b-a12b:free">Nemotron 120B (Бесплатно, лучшее)</option>
-      <option value="nvidia/nemotron-3.5-lightning:free">Nemotron Lightning (Бесплатно, быстрый)</option>
-      <option value="openrouter/free">OpenRouter Auto (Бесплатно)</option>
-      <option value="google/gemma-4-31b-it:free">Gemma 4 31B (Бесплатно)</option>
-     </select>
-    </div>
-
-    <div>
-     <div class="text-[11px] text-black font-medium mb-1">API-ключ (активен)</div>
-     <div class="relative flex items-center">
-      <input id="openRouterKeyInput" type="password" placeholder="Ключ встроен по умолчанию" class="w-full bg-[#f2f2f7] text-black text-xs font-mono px-3 py-2 pr-9 rounded-lg outline-none border border-neutral-300 focus:border-[#3a3a3c] transition">
-      <button id="toggleKeyVisibilityBtn" class="absolute right-2 text-[#3a3a3c] hover:text-black p-1" title="Показать/скрыть ключ">
-       <svg id="eyeIcon" class="w-4 h-4 stroke-current fill-none stroke-[2]" viewBox="0 0 24 24">
-        <path stroke-linecap="round" stroke-linejoin="round" d="M2.036 12.322a1.012 1.012 0 010-.639C3.423 7.51 7.36 4.5 12 4.5c4.638 0 8.573 3.007 9.963 7.178.07.207.07.431 0 .639C20.577 16.49 16.64 19.5 12 19.5c-4.638 0-8.573-3.007-9.963-7.178z"/>
-        <path stroke-linecap="round" stroke-linejoin="round" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/>
-       </svg>
-      </button>
+   <div class="text-[12px] uppercase tracking-wider text-neutral-500 font-semibold px-2 mb-1.5">Оформление текста</div>
+   <div class="bg-white rounded-2xl border border-neutral-200/80 shadow-sm divide-y divide-neutral-100 overflow-hidden">
+    <!-- Font Style Row -->
+    <div class="p-3.5 flex items-center justify-between">
+     <span class="font-semibold text-sm text-black">Стиль шрифта</span>
+     <div class="flex bg-[#e5e5ea] p-1 rounded-xl gap-1">
+      <button type="button" id="fontSegSans" class="px-2.5 py-1 text-xs font-semibold rounded-lg bg-white text-black shadow-sm transition">Стандарт</button>
+      <button type="button" id="fontSegSerif" class="px-2.5 py-1 text-xs font-semibold rounded-lg text-neutral-600 hover:text-black transition">Сериф</button>
+      <button type="button" id="fontSegMono" class="px-2.5 py-1 text-xs font-semibold rounded-lg text-neutral-600 hover:text-black transition">Моно</button>
      </div>
+     <select id="fontStyleSelect" class="hidden">
+      <option value="sans">sans</option>
+      <option value="serif">serif</option>
+      <option value="mono">mono</option>
+     </select>
     </div>
 
-    <div class="text-[10px] text-black pt-1 border-t border-neutral-100">
-     Ваш ключ встроен по умолчанию. Нейросеть работает без цензуры и сохраняет авторский стиль.
+    <!-- Font Size Slider -->
+    <div class="p-3.5 space-y-2">
+     <div class="flex items-center justify-between">
+      <span class="font-semibold text-sm text-black">Размер шрифта</span>
+      <span id="fontSizeDisplay" class="text-xs font-bold font-mono text-black bg-[#f2f2f7] px-2.5 py-1 rounded-lg">17 пт</span>
+     </div>
+     <input id="fontSizeSlider" type="range" min="14" max="28" value="17" class="w-full accent-[#3a3a3c] cursor-pointer">
+    </div>
+
+    <!-- Read Only Apple iOS Switch -->
+    <div class="p-3.5 flex items-center justify-between">
+     <div>
+      <div class="font-semibold text-sm text-black">Режим чтения</div>
+      <div class="text-[11px] text-neutral-500 font-medium">Защита от случайных правок</div>
+     </div>
+     <label class="relative inline-flex items-center cursor-pointer">
+      <input id="readOnlyToggle" type="checkbox" class="sr-only peer">
+      <div class="w-12 h-7 bg-[#e5e5ea] peer-checked:bg-[#3a3a3c] rounded-full transition-colors duration-200 ease-in-out relative after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:rounded-full after:h-6 after:w-6 after:shadow-[0_2px_4px_rgba(0,0,0,0.18)] after:transition-transform after:duration-200 after:ease-in-out peer-checked:after:translate-x-5"></div>
+     </label>
+    </div>
+   </div>
+   </div>
+
+   <!-- Section: AI (Clean, No API-key clutter) -->
+   <div>
+   <div class="text-[12px] uppercase tracking-wider text-neutral-500 font-semibold px-2 mb-1.5">Нейросеть</div>
+   <div class="bg-white rounded-2xl border border-neutral-200/80 shadow-sm divide-y divide-neutral-100 overflow-hidden">
+    <div class="p-3.5 flex items-center justify-between">
+     <div>
+      <div class="font-semibold text-sm text-black">Режим ИИ</div>
+      <div class="text-[11px] text-neutral-500 font-medium">Что делать с текстом</div>
+     </div>
+     <select id="openRouterModeSelect" class="bg-[#f2f2f7] text-black text-xs font-semibold px-3 py-1.5 rounded-xl outline-none border border-neutral-300 focus:border-[#3a3a3c] transition">
+      <option value="fix_errors">Исправить ошибки</option>
+      <option value="format_beautify">Оформить структуру</option>
+      <option value="summary">Краткая выжимка</option>
+     </select>
+    </div>
+
+    <div class="p-3.5 flex items-center justify-between">
+     <div>
+      <div class="font-semibold text-sm text-black">Модель</div>
+      <div class="text-[11px] text-neutral-500 font-medium">Бесплатный ИИ без цензуры</div>
+     </div>
+     <select id="openRouterModelSelect" class="bg-[#f2f2f7] text-black text-xs font-semibold px-3 py-1.5 rounded-xl outline-none border border-neutral-300 focus:border-[#3a3a3c] transition max-w-[170px] truncate">
+      <option value="nvidia/nemotron-3-super-120b-a12b:free">Nemotron 120B</option>
+      <option value="nvidia/nemotron-3.5-lightning:free">Nemotron Fast</option>
+      <option value="openrouter/free">OpenRouter Auto</option>
+      <option value="google/gemma-4-31b-it:free">Gemma 4 31B</option>
+     </select>
     </div>
    </div>
    </div>
 
    <!-- Section: Actions -->
    <div>
-   <div class="text-[11px] uppercase tracking-wider text-black font-semibold px-2 mb-1.5">Действия</div>
-   <div class="bg-white rounded-2xl divide-y divide-neutral-200 border border-neutral-200/80 shadow-sm">
-    <button id="cleanWhitespaceBtn" class="apple-row w-full px-3.5 py-3 flex items-center justify-between text-black rounded-t-2xl text-left">
-    <span class="flex items-center gap-2 font-medium text-xs">
-     <svg class="w-4 h-4 text-[#3a3a3c]" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9.813 15.904L9 18.75l-.813-2.846a4.5 4.5 0 00-3.09-3.09L2.25 12l2.846-.813a4.5 4.5 0 003.09-3.09L9 5.25l.813 2.846a4.5 4.5 0 003.09 3.09L15.75 12l-2.846.813a4.5 4.5 0 00-3.09 3.09zM18.259 8.715L18 9.75l-.259-1.035a3.375 3.375 0 00-2.455-2.456L14.25 6l1.036-.259a3.375 3.375 0 002.455-2.456L18 2.25l.259 1.035a3.375 3.375 0 002.456 2.456L21.75 6l-1.035.259a3.375 3.375 0 00-2.456 2.456z"/></svg>
-     Исправить ошибки в тексте
-    </span>
-    <span id="fixErrorsNotice" class="text-xs text-neutral-600 font-medium hidden">Исправление...</span>
+   <div class="text-[12px] uppercase tracking-wider text-neutral-500 font-semibold px-2 mb-1.5">Действия</div>
+   <div class="bg-white rounded-2xl border border-neutral-200/80 shadow-sm divide-y divide-neutral-100 overflow-hidden">
+    <button id="cleanWhitespaceBtn" class="apple-row w-full px-4 py-3.5 flex items-center justify-between text-left group">
+     <span class="flex items-center gap-3 font-semibold text-sm text-black">
+      <span class="w-7 h-7 rounded-lg bg-[#3a3a3c] text-white flex items-center justify-center shrink-0 shadow-sm">
+       <svg class="w-4 h-4 stroke-current fill-none stroke-[2]" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M9.813 15.904L9 18.75l-.813-2.846a4.5 4.5 0 00-3.09-3.09L2.25 12l2.846-.813a4.5 4.5 0 003.09-3.09L9 5.25l.813 2.846a4.5 4.5 0 003.09 3.09L15.75 12l-2.846.813a4.5 4.5 0 00-3.09 3.09z"/></svg>
+      </span>
+      Исправить ошибки в тексте
+     </span>
+     <span class="flex items-center gap-1.5">
+      <span id="fixErrorsNotice" class="text-xs text-neutral-600 font-semibold hidden">Обработка...</span>
+      <span class="text-neutral-400 font-bold text-xs">›</span>
+     </span>
     </button>
 
-    <button id="copyAllTextBtn" class="apple-row w-full px-3.5 py-3 flex items-center justify-between text-black rounded-b-2xl text-left">
-    <span class="flex items-center gap-2 font-medium text-xs">
-     <svg class="w-4 h-4 text-[#3a3a3c]" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7v8a2 2 0 002 2h6M8 7V5a2 2 0 012-2h4.586a1 1 0 01.707.293l4.414 4.414a1 1 0 01.293.707V15a2 2 0 01-2 2h-2M8 7H6a2 2 0 00-2 2v10a2 2 0 002 2h8a2 2 0 002-2v-2"/></svg>
-     Скопировать весь текст
-    </span>
-    <span id="copyToast" class="text-xs text-green-600 font-medium hidden">Скопировано</span>
+    <button id="copyAllTextBtn" class="apple-row w-full px-4 py-3.5 flex items-center justify-between text-left group">
+     <span class="flex items-center gap-3 font-semibold text-sm text-black">
+      <span class="w-7 h-7 rounded-lg bg-[#3a3a3c] text-white flex items-center justify-center shrink-0 shadow-sm">
+       <svg class="w-4 h-4 stroke-current fill-none stroke-[2]" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M8 7v8a2 2 0 002 2h6M8 7V5a2 2 0 012-2h4.586a1 1 0 01.707.293l4.414 4.414a1 1 0 01.293.707V15a2 2 0 01-2 2h-2M8 7H6a2 2 0 00-2 2v10a2 2 0 002 2h8a2 2 0 002-2v-2"/></svg>
+      </span>
+      Скопировать весь текст
+     </span>
+     <span class="flex items-center gap-1.5">
+      <span id="copyToast" class="text-xs text-green-600 font-semibold hidden">Скопировано</span>
+      <span class="text-neutral-400 font-bold text-xs">›</span>
+     </span>
     </button>
    </div>
    </div>
 
    <!-- Section: Details Stats -->
    <div>
-   <div class="text-[11px] uppercase tracking-wider text-neutral-400 font-semibold px-2 mb-1.5">Информация</div>
-   <div class="bg-[#1c1c1e] rounded-2xl p-3.5 space-y-2 border border-neutral-700/40 text-xs">
-    <div class="flex justify-between text-neutral-300">
-    <span>Символов:</span>
-    <span id="statChars" class="font-mono text-neutral-400">0</span>
+   <div class="text-[12px] uppercase tracking-wider text-neutral-500 font-semibold px-2 mb-1.5">Информация</div>
+   <div class="bg-white rounded-2xl border border-neutral-200/80 shadow-sm p-4 space-y-2.5 text-xs text-black">
+    <div class="flex justify-between items-center">
+     <span class="text-neutral-600 font-medium">Символов:</span>
+     <span id="statChars" class="font-bold text-black font-mono">0</span>
     </div>
-    <div class="flex justify-between text-neutral-300">
-    <span>Слов:</span>
-    <span id="statWords" class="font-mono text-neutral-400">0</span>
+    <div class="flex justify-between items-center">
+     <span class="text-neutral-600 font-medium">Слов:</span>
+     <span id="statWords" class="font-bold text-black font-mono">0</span>
     </div>
-    <div class="flex justify-between text-neutral-300">
-    <span>Время чтения:</span>
-    <span id="statReadingTime" class="text-neutral-400">~1 мин</span>
+    <div class="flex justify-between items-center">
+     <span class="text-neutral-600 font-medium">Время чтения:</span>
+     <span id="statReadingTime" class="font-bold text-black">~1 мин</span>
     </div>
    </div>
    </div>
@@ -562,12 +569,29 @@
   if (settings.fontStyle === 'serif') noteTextarea.classList.add('font-serif-ios');
   else if (settings.fontStyle === 'mono') noteTextarea.classList.add('font-mono-ios');
   else noteTextarea.classList.add('font-sans');
-  fontStyleSelect.value = settings.fontStyle;
+  if (fontStyleSelect) fontStyleSelect.value = settings.fontStyle;
+
+  const fontSegSans = document.getElementById('fontSegSans');
+  const fontSegSerif = document.getElementById('fontSegSerif');
+  const fontSegMono = document.getElementById('fontSegMono');
+  if (fontSegSans && fontSegSerif && fontSegMono) {
+   [
+    { btn: fontSegSans, id: 'sans' },
+    { btn: fontSegSerif, id: 'serif' },
+    { btn: fontSegMono, id: 'mono' }
+   ].forEach(item => {
+    if (settings.fontStyle === item.id) {
+     item.btn.className = "px-2.5 py-1 text-xs font-semibold rounded-lg bg-white text-black shadow-sm transition";
+    } else {
+     item.btn.className = "px-2.5 py-1 text-xs font-semibold rounded-lg text-neutral-600 hover:text-black transition";
+    }
+   });
+  }
 
   noteTextarea.readOnly = settings.readOnly;
   readOnlyToggle.checked = settings.readOnly;
   if (settings.readOnly) {
-  wordCharStats.innerHTML = `<span class="text-[#3a3a3c] font-semibold"> Только чтение</span>`;
+  wordCharStats.innerHTML = `<span class="text-[#3a3a3c] font-semibold">Только чтение</span>`;
   } else {
   const text = noteTextarea.value;
   const chars = text.length;
@@ -694,10 +718,19 @@
   applyEditorSettings();
  });
 
- fontStyleSelect.addEventListener('change', (e) => {
-  settings.fontStyle = e.target.value;
-  applyEditorSettings();
- });
+  const fontSegSans = document.getElementById('fontSegSans');
+  const fontSegSerif = document.getElementById('fontSegSerif');
+  const fontSegMono = document.getElementById('fontSegMono');
+  if (fontSegSans) fontSegSans.addEventListener('click', () => { settings.fontStyle = 'sans'; applyEditorSettings(); });
+  if (fontSegSerif) fontSegSerif.addEventListener('click', () => { settings.fontStyle = 'serif'; applyEditorSettings(); });
+  if (fontSegMono) fontSegMono.addEventListener('click', () => { settings.fontStyle = 'mono'; applyEditorSettings(); });
+
+  if (fontStyleSelect) {
+   fontStyleSelect.addEventListener('change', (e) => {
+    settings.fontStyle = e.target.value;
+    applyEditorSettings();
+   });
+  }
 
  readOnlyToggle.addEventListener('change', (e) => {
   settings.readOnly = e.target.checked;
@@ -908,20 +941,9 @@
   if (noteTextarea) noteTextarea.className = "w-full flex-1 bg-transparent text-black placeholder-neutral-400 outline-none resize-none leading-relaxed tracking-normal font-sans transition-all duration-200";
   if (editorFooter) editorFooter.className = "h-10 px-5 border-t border-neutral-200/80 bg-[#f9f9fb] flex items-center justify-between text-[11px] text-black font-semibold";
 
-  settingsSheet.style.backgroundColor = '#f2f2f7';
-  settingsSheet.style.color = '#111827';
-  if (sheetHeaderTitle) sheetHeaderTitle.className = "text-base font-bold text-neutral-900";
-  if (fontStyleSelect) fontStyleSelect.className = "bg-white text-neutral-900 text-xs font-medium px-2.5 py-1.5 rounded-lg outline-none border border-neutral-300 focus:border-neutral-700 transition";
-
-  document.querySelectorAll('#settingsSheet .bg-\\[\\#1c1c1e\\], #settingsSheet .bg-white').forEach(el => {
-   if (el.classList.contains('divide-y') || el.classList.contains('divide-neutral-200') || el.classList.contains('divide-neutral-800')) {
-   el.className = "bg-white rounded-2xl divide-y divide-neutral-200 border border-neutral-200/80 shadow-sm";
-   } else if (el.classList.contains('text-xs') || el.id === 'statChars') {
-   el.className = "bg-white rounded-2xl p-3.5 space-y-2 border border-neutral-200/80 text-xs text-neutral-800 shadow-sm";
-   } else {
-   el.className = "bg-white rounded-2xl p-3.5 space-y-3.5 border border-neutral-200/80 text-neutral-800 shadow-sm";
-   }
-  });
+   settingsSheet.style.backgroundColor = '#f2f2f7';
+   settingsSheet.style.color = '#000000';
+   if (sheetHeaderTitle) sheetHeaderTitle.className = "text-base font-bold text-black";
 
     }
     renderNotes();

@@ -21,7 +21,6 @@ struct NoteSettingsView: View {
     @State private var correctionSuccessNotice = false
     @State private var errorMessage: String?
     @State private var showErrorAlert = false
-    @State private var isKeyVisible = false
 
     private var currentMode: AIProcessingMode {
         AIProcessingMode(rawValue: processingModeRaw) ?? .fixErrors
@@ -32,42 +31,50 @@ struct NoteSettingsView: View {
             Form {
                 // Раздел: Оформление текста
                 Section(header: Text("Оформление текста")) {
-                    Picker("Стиль шрифта", selection: $fontDesign) {
-                        Text("Стандартный").tag("default")
-                        Text("С засечками").tag("serif")
-                        Text("Моноширинный (код)").tag("monospaced")
+                    VStack(alignment: .leading, spacing: 8) {
+                        Text("Стиль шрифта")
+                            .font(.subheadline.weight(.semibold))
+                            .foregroundColor(.primary)
+
+                        Picker("Стиль шрифта", selection: $fontDesign) {
+                            Text("Стандарт").tag("default")
+                            Text("С засечками").tag("serif")
+                            Text("Моно").tag("monospaced")
+                        }
+                        .pickerStyle(.segmented)
                     }
-                    .pickerStyle(.menu)
+                    .padding(.vertical, 4)
 
                     VStack(alignment: .leading, spacing: 8) {
                         HStack {
                             Text("Размер шрифта")
+                                .font(.subheadline.weight(.semibold))
+                                .foregroundColor(.primary)
                             Spacer()
                             Text("\(Int(fontSize)) пт")
+                                .font(.subheadline.monospacedDigit().weight(.bold))
                                 .foregroundColor(.primary)
                         }
                         Slider(value: $fontSize, in: 14...28, step: 1)
                             .tint(Color(red: 0.23, green: 0.23, blue: 0.24))
                     }
+                    .padding(.vertical, 4)
 
                     Toggle(isOn: $isReadOnly) {
                         VStack(alignment: .leading, spacing: 2) {
                             Text("Режим чтения")
+                                .font(.subheadline.weight(.semibold))
+                                .foregroundColor(.primary)
                             Text("Защита от случайных правок")
                                 .font(.caption)
-                                .foregroundColor(.primary)
+                                .foregroundColor(.secondary)
                         }
                     }
                     .tint(Color(red: 0.23, green: 0.23, blue: 0.24))
                 }
 
-                // Раздел: Нейросеть (OpenRouter)
-                Section(
-                    header: Text("Нейросеть (OpenRouter)"),
-                    footer: Text("Ваш ключ встроен по умолчанию. Нейросеть работает без цензуры и сохраняет авторский стиль.")
-                        .font(.caption2)
-                        .foregroundColor(.primary)
-                ) {
+                // Раздел: Нейросеть
+                Section(header: Text("Нейросеть")) {
                     Picker("Режим", selection: $processingModeRaw) {
                         ForEach(AIProcessingMode.allCases) { mode in
                             Text(mode.title).tag(mode.rawValue)
@@ -81,41 +88,6 @@ struct NoteSettingsView: View {
                         }
                     }
                     .pickerStyle(.menu)
-
-                    VStack(alignment: .leading, spacing: 6) {
-                        Text("API-ключ (активен)")
-                            .font(.caption)
-                            .foregroundColor(.primary)
-
-                        HStack {
-                            if isKeyVisible {
-                                TextField("Ключ встроен", text: Binding(
-                                    get: { openRouterApiKey.isEmpty ? AIService.embeddedAPIKey : openRouterApiKey },
-                                    set: { openRouterApiKey = $0 }
-                                ))
-                                .autocapitalization(.none)
-                                .disableAutocorrection(true)
-                                .font(.system(.subheadline, design: .monospaced))
-                            } else {
-                                SecureField("Ключ встроен", text: Binding(
-                                    get: { openRouterApiKey.isEmpty ? AIService.embeddedAPIKey : openRouterApiKey },
-                                    set: { openRouterApiKey = $0 }
-                                ))
-                                .autocapitalization(.none)
-                                .disableAutocorrection(true)
-                                .font(.system(.subheadline, design: .monospaced))
-                            }
-
-                            Button {
-                                isKeyVisible.toggle()
-                            } label: {
-                                Image(systemName: isKeyVisible ? "eye.slash" : "eye")
-                                    .foregroundColor(Color(red: 0.23, green: 0.23, blue: 0.24))
-                            }
-                            .buttonStyle(.plain)
-                        }
-                    }
-                    .padding(.vertical, 2)
                 }
 
                 // Раздел: Быстрые действия
@@ -125,13 +97,14 @@ struct NoteSettingsView: View {
                     } label: {
                         HStack {
                             Label(currentMode.title, systemImage: "sparkles")
+                                .foregroundColor(.primary)
                             Spacer()
                             if isProcessingAI {
                                 ProgressView()
                                     .progressViewStyle(CircularProgressViewStyle())
                             } else if correctionSuccessNotice {
                                 Text("Готово")
-                                    .font(.caption.weight(.medium))
+                                    .font(.caption.weight(.semibold))
                                     .foregroundColor(.green)
                             }
                         }
@@ -147,10 +120,11 @@ struct NoteSettingsView: View {
                     } label: {
                         HStack {
                             Label("Скопировать весь текст", systemImage: "doc.on.doc")
+                                .foregroundColor(.primary)
                             Spacer()
                             if showCopiedNotice {
                                 Text("Скопировано")
-                                    .font(.caption)
+                                    .font(.caption.weight(.semibold))
                                     .foregroundColor(.green)
                             }
                         }
@@ -163,22 +137,30 @@ struct NoteSettingsView: View {
                         HStack {
                             Text("Символов")
                             Spacer()
-                            Text("\(note.characterCount)").foregroundColor(.primary)
+                            Text("\(note.characterCount)")
+                                .fontWeight(.bold)
+                                .foregroundColor(.primary)
                         }
                         HStack {
                             Text("Слов")
                             Spacer()
-                            Text("\(note.wordCount)").foregroundColor(.primary)
+                            Text("\(note.wordCount)")
+                                .fontWeight(.bold)
+                                .foregroundColor(.primary)
                         }
                         HStack {
                             Text("Примерное время чтения")
                             Spacer()
-                            Text("~\(max(1, note.wordCount / 180)) мин").foregroundColor(.primary)
+                            Text("~\(max(1, note.wordCount / 180)) мин")
+                                .fontWeight(.bold)
+                                .foregroundColor(.primary)
                         }
                         HStack {
                             Text("Последнее изменение")
                             Spacer()
-                            Text(note.formattedDate).foregroundColor(.primary)
+                            Text(note.formattedDate)
+                                .fontWeight(.bold)
+                                .foregroundColor(.primary)
                         }
                     }
                 }
