@@ -12,13 +12,23 @@ fi
 xcodebuild -version
 mkdir -p build dist
 python3 -B -m unittest discover -s scripts/tests -v
-plist_before="$(shasum -a 256 Resources/Info.plist)"
+cp Resources/Info.plist build/Info-before-generation.plist
 xcodegen generate
-[[ "$(shasum -a 256 Resources/Info.plist)" == "$plist_before" ]] || {
-  echo "XcodeGen unexpectedly modified Info.plist" >&2
-  exit 1
-}
-device="$(python3 scripts/select_simulator.py)"
+python3 - <<'PY'
+import pathlib, plistlib
+before = plistlib.loads(pathlib.Path("build/Info-before-generation.plist").read_bytes())
+after = plistlib.loads(pathlib.Path("Resources/Info.plist").read_bytes())
+if before != after:
+    for key in sorted(before.keys() | after.keys()):
+        if before.get(key) != after.get(key):
+            print(f"Info.plist changed: {key}: {before.get(key)!r} -> {after.get(key)!r}")
+    raise SystemExit("XcodeGen changed application metadata")
+print("Application Info.plist values preserved")
+PY
+if ! device="$(python3 scripts/select_simulator.py)"; then
+  xcodebuild -downloadPlatform iOS -buildVersion "$EXPECTED_IOS_SDK"
+  device="$(python3 scripts/select_simulator.py)"
+fi
 xcodebuild -project NotesApp.xcodeproj -scheme NotesApp \
   -destination "platform=iOS Simulator,id=$device" \
   -derivedDataPath build/DerivedData \
