@@ -103,15 +103,6 @@ struct NoteSettingsView: View {
             }
             .navigationTitle("Параметры заметки")
             .navigationBarTitleDisplayMode(.inline)
-            .toolbar {
-                ToolbarItem(placement: .confirmationAction) {
-                    Button("Закрыть") {
-                        dismiss()
-                    }
-                    .font(.body.weight(.semibold))
-                    .foregroundColor(.orange)
-                }
-            }
         }
         .navigationViewStyle(.stack)
     }

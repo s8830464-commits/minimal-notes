@@ -89,7 +89,7 @@ struct NoteDetailView: View {
                         viewModel.flush()
                         showingSettingsSheet = true
                     } label: {
-                        Image(systemName: "ellipsis.circle")
+                        Image(systemName: "gearshape")
                     }
                     .accessibilityLabel("Параметры заметки")
 
