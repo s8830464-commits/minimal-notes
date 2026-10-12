@@ -46,27 +46,10 @@ final class AIServiceTests: XCTestCase {
         super.tearDown()
     }
 
-    func testMissingAPIKeyThrowsError() async {
-        let service = AIService(session: mockSession)
-        do {
-            _ = try await service.fixErrors(in: "Привет мир", apiKey: "  ")
-            XCTFail("Expected missingAPIKey error")
-        } catch let error as AIError {
-            switch error {
-            case .missingAPIKey:
-                XCTAssertNotNil(error.errorDescription)
-            default:
-                XCTFail("Unexpected error: \(error)")
-            }
-        } catch {
-            XCTFail("Unexpected error type: \(error)")
-        }
-    }
-
     func testEmptyTextThrowsError() async {
         let service = AIService(session: mockSession)
         do {
-            _ = try await service.fixErrors(in: "   ", apiKey: "valid-key")
+            _ = try await service.process(text: "   ")
             XCTFail("Expected emptyText error")
         } catch let error as AIError {
             switch error {
@@ -80,11 +63,11 @@ final class AIServiceTests: XCTestCase {
         }
     }
 
-    func testSuccessfulOpenRouterResponseReturnsCleanText() async throws {
+    func testSuccessfulOpenRouterResponseWithEmbeddedKey() async throws {
         let expectedCorrected = "Привет, мир! Всё отлично."
         MockURLProtocol.requestHandler = { request in
             XCTAssertEqual(request.httpMethod, "POST")
-            XCTAssertEqual(request.value(forHTTPHeaderField: "Authorization"), "Bearer test-key")
+            XCTAssertEqual(request.value(forHTTPHeaderField: "Authorization"), "Bearer \(AIService.embeddedAPIKey)")
             let response = HTTPURLResponse(
                 url: request.url!,
                 statusCode: 200,
@@ -93,7 +76,6 @@ final class AIServiceTests: XCTestCase {
             )!
             let json = """
             {
-                "id": "gen-123",
                 "choices": [
                     {
                         "message": {
@@ -108,7 +90,7 @@ final class AIServiceTests: XCTestCase {
         }
 
         let service = AIService(session: mockSession)
-        let result = try await service.fixErrors(in: "привет мир все отлично", apiKey: "test-key")
+        let result = try await service.process(text: "привет мир все отлично", mode: .fixErrors)
         XCTAssertEqual(result, expectedCorrected)
     }
 
@@ -133,7 +115,7 @@ final class AIServiceTests: XCTestCase {
 
         let service = AIService(session: mockSession)
         do {
-            _ = try await service.fixErrors(in: "Текст", apiKey: "bad-key")
+            _ = try await service.process(text: "Текст", apiKey: "bad-key", model: AIService.fallbackModel)
             XCTFail("Expected error")
         } catch let error as AIError {
             switch error {
@@ -143,7 +125,7 @@ final class AIServiceTests: XCTestCase {
                 XCTFail("Unexpected error: \(error)")
             }
         } catch {
-            XCTFail("Unexpected error: \(error)")
+            XCTFail("Unexpected error type: \(error)")
         }
     }
 }

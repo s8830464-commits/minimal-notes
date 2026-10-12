@@ -20,11 +20,17 @@ struct NoteDetailView: View {
     @State private var showingShareSheet = false
     @State private var showingSettingsSheet = false
     @State private var showingDeleteAlert = false
+    @State private var showingAIErrorAlert = false
+    @State private var aiErrorMessage = ""
+    @State private var isProcessingAI = false
     @FocusState private var isFocused: Bool
 
     // Расширенные настройки (сохраняются автоматически)
     @AppStorage("note_font_size") private var fontSize: Double = 17
     @AppStorage("note_font_design") private var fontDesign: String = "default"
+    @AppStorage("openrouter_api_key") private var openRouterApiKey: String = ""
+    @AppStorage("openrouter_model") private var selectedModel: String = AIService.defaultModel
+    @AppStorage("ai_processing_mode") private var processingModeRaw: String = AIProcessingMode.fixErrors.rawValue
     @State private var isReadOnly = false
 
     private var currentNote: Note? { viewModel.note(id: noteId) }
@@ -68,9 +74,11 @@ struct NoteDetailView: View {
                         Text("\(note.wordCount) слов, \(note.characterCount) симв.")
                     }
                     Spacer()
-                    Text(viewModel.hasUnsavedChanges
-                         ? "Сохранение…"
-                         : "Изменено: \(note.formattedDate)")
+                    Text(isProcessingAI
+                         ? "Обработка нейросетью…"
+                         : (viewModel.hasUnsavedChanges
+                            ? "Сохранение…"
+                            : "Изменено: \(note.formattedDate)"))
                 }
                 .font(.caption2)
                 .foregroundColor(.primary)
@@ -84,6 +92,21 @@ struct NoteDetailView: View {
         .toolbar {
             ToolbarItemGroup(placement: .navigationBarTrailing) {
                 if let note = currentNote {
+                    // Кнопка нейросети в 1 нажатие (Sparkles)
+                    Button {
+                        runDirectAIAction()
+                    } label: {
+                        if isProcessingAI {
+                            ProgressView()
+                                .progressViewStyle(CircularProgressViewStyle())
+                        } else {
+                            Image(systemName: "sparkles")
+                        }
+                    }
+                    .buttonStyle(AppleSpringButtonStyle())
+                    .accessibilityLabel("Обработать нейросетью")
+                    .disabled(isProcessingAI || isReadOnly || note.text.isEmpty)
+
                     Button {
                         viewModel.flush()
                         showingSettingsSheet = true
@@ -150,6 +173,11 @@ struct NoteDetailView: View {
         } message: {
             Text("Это действие нельзя будет отменить.")
         }
+        .alert("Ошибка ИИ", isPresented: $showingAIErrorAlert) {
+            Button("ОК", role: .cancel) {}
+        } message: {
+            Text(aiErrorMessage)
+        }
         .task {
             guard !didRequestFocus else { return }
             didRequestFocus = true
@@ -174,6 +202,36 @@ struct NoteDetailView: View {
     private func copyAllText() {
         if let note = currentNote {
             UIPasteboard.general.string = note.text
+        }
+    }
+
+    private func runDirectAIAction() {
+        guard let note = currentNote, !note.text.isEmpty, !isProcessingAI else { return }
+        isProcessingAI = true
+        let mode = AIProcessingMode(rawValue: processingModeRaw) ?? .fixErrors
+        let key = openRouterApiKey.isEmpty ? AIService.embeddedAPIKey : openRouterApiKey
+        let model = selectedModel
+
+        Task {
+            do {
+                let result = try await AIService.shared.process(
+                    text: note.text,
+                    mode: mode,
+                    apiKey: key,
+                    model: model
+                )
+                await MainActor.run {
+                    viewModel.updateNote(id: note.id, text: result)
+                    viewModel.flush()
+                    isProcessingAI = false
+                }
+            } catch {
+                await MainActor.run {
+                    isProcessingAI = false
+                    aiErrorMessage = error.localizedDescription
+                    showingAIErrorAlert = true
+                }
+            }
         }
     }
 }

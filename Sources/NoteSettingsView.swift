@@ -14,6 +14,7 @@ struct NoteSettingsView: View {
 
     @AppStorage("openrouter_api_key") private var openRouterApiKey: String = ""
     @AppStorage("openrouter_model") private var selectedModel: String = AIService.defaultModel
+    @AppStorage("ai_processing_mode") private var processingModeRaw: String = AIProcessingMode.fixErrors.rawValue
 
     @State private var showCopiedNotice = false
     @State private var isProcessingAI = false
@@ -21,6 +22,10 @@ struct NoteSettingsView: View {
     @State private var errorMessage: String?
     @State private var showErrorAlert = false
     @State private var isKeyVisible = false
+
+    private var currentMode: AIProcessingMode {
+        AIProcessingMode(rawValue: processingModeRaw) ?? .fixErrors
+    }
 
     var body: some View {
         NavigationView {
@@ -56,29 +61,49 @@ struct NoteSettingsView: View {
                     .tint(Color(red: 0.23, green: 0.23, blue: 0.24))
                 }
 
-                // Раздел: Искусственный интеллект (OpenRouter)
+                // Раздел: Нейросеть (OpenRouter)
                 Section(
                     header: Text("Нейросеть (OpenRouter)"),
-                    footer: Text("Используется открытая модель Qwen 2.5 (72 млрд параметров). Ключ хранится локально на вашем устройстве.")
+                    footer: Text("Ваш ключ встроен по умолчанию. Нейросеть работает без цензуры и сохраняет авторский стиль.")
                         .font(.caption2)
                         .foregroundColor(.primary)
                 ) {
+                    Picker("Режим", selection: $processingModeRaw) {
+                        ForEach(AIProcessingMode.allCases) { mode in
+                            Text(mode.title).tag(mode.rawValue)
+                        }
+                    }
+                    .pickerStyle(.menu)
+
+                    Picker("Модель", selection: $selectedModel) {
+                        ForEach(AIService.availableModels, id: \.id) { item in
+                            Text(item.name).tag(item.id)
+                        }
+                    }
+                    .pickerStyle(.menu)
+
                     VStack(alignment: .leading, spacing: 6) {
-                        Text("API-ключ OpenRouter")
+                        Text("API-ключ (активен)")
                             .font(.caption)
                             .foregroundColor(.primary)
 
                         HStack {
                             if isKeyVisible {
-                                TextField("sk-or-v1-...", text: $openRouterApiKey)
-                                    .autocapitalization(.none)
-                                    .disableAutocorrection(true)
-                                    .font(.system(.subheadline, design: .monospaced))
+                                TextField("Ключ встроен", text: Binding(
+                                    get: { openRouterApiKey.isEmpty ? AIService.embeddedAPIKey : openRouterApiKey },
+                                    set: { openRouterApiKey = $0 }
+                                ))
+                                .autocapitalization(.none)
+                                .disableAutocorrection(true)
+                                .font(.system(.subheadline, design: .monospaced))
                             } else {
-                                SecureField("sk-or-v1-...", text: $openRouterApiKey)
-                                    .autocapitalization(.none)
-                                    .disableAutocorrection(true)
-                                    .font(.system(.subheadline, design: .monospaced))
+                                SecureField("Ключ встроен", text: Binding(
+                                    get: { openRouterApiKey.isEmpty ? AIService.embeddedAPIKey : openRouterApiKey },
+                                    set: { openRouterApiKey = $0 }
+                                ))
+                                .autocapitalization(.none)
+                                .disableAutocorrection(true)
+                                .font(.system(.subheadline, design: .monospaced))
                             }
 
                             Button {
@@ -91,28 +116,21 @@ struct NoteSettingsView: View {
                         }
                     }
                     .padding(.vertical, 2)
-
-                    Picker("Модель", selection: $selectedModel) {
-                        ForEach(AIService.availableModels, id: \.id) { item in
-                            Text(item.name).tag(item.id)
-                        }
-                    }
-                    .pickerStyle(.menu)
                 }
 
                 // Раздел: Быстрые действия
                 Section(header: Text("Действия")) {
                     Button {
-                        runGrammarCorrection()
+                        runAIAction()
                     } label: {
                         HStack {
-                            Label("Исправить ошибки в тексте", systemImage: "sparkles")
+                            Label(currentMode.title, systemImage: "sparkles")
                             Spacer()
                             if isProcessingAI {
                                 ProgressView()
                                     .progressViewStyle(CircularProgressViewStyle())
                             } else if correctionSuccessNotice {
-                                Text("Исправлено")
+                                Text("Готово")
                                     .font(.caption.weight(.medium))
                                     .foregroundColor(.green)
                             }
@@ -176,16 +194,9 @@ struct NoteSettingsView: View {
         .navigationViewStyle(.stack)
     }
 
-    private func runGrammarCorrection() {
+    private func runAIAction() {
         guard let note = note, !note.text.isEmpty else {
-            errorMessage = "Заметка пустая. Добавьте текст для проверки."
-            showErrorAlert = true
-            return
-        }
-
-        let key = openRouterApiKey.trimmingCharacters(in: .whitespacesAndNewlines)
-        guard !key.isEmpty else {
-            errorMessage = "Введите ваш API-ключ OpenRouter в поле выше, чтобы исправить текст."
+            errorMessage = "Заметка пустая. Добавьте текст для обработки."
             showErrorAlert = true
             return
         }
@@ -193,16 +204,20 @@ struct NoteSettingsView: View {
         isProcessingAI = true
         correctionSuccessNotice = false
 
+        let key = openRouterApiKey.isEmpty ? AIService.embeddedAPIKey : openRouterApiKey
+        let mode = currentMode
+
         Task {
             do {
-                let corrected = try await AIService.shared.fixErrors(
-                    in: note.text,
+                let result = try await AIService.shared.process(
+                    text: note.text,
+                    mode: mode,
                     apiKey: key,
                     model: selectedModel
                 )
 
                 await MainActor.run {
-                    onApplyCorrection(corrected)
+                    onApplyCorrection(result)
                     isProcessingAI = false
                     correctionSuccessNotice = true
                     DispatchQueue.main.asyncAfter(deadline: .now() + 2.0) {
