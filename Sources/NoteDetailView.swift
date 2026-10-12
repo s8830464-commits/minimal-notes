@@ -102,13 +102,6 @@ struct NoteDetailView: View {
                     .accessibilityLabel("Поделиться заметкой")
                     .disabled(note.text.isEmpty)
 
-                    Button {
-                        viewModel.togglePin(id: noteId)
-                    } label: {
-                        Image(systemName: note.isPinned ? "pin.fill" : "pin")
-                    }
-                    .accessibilityLabel(note.isPinned ? "Открепить заметку" : "Закрепить заметку")
-
                     Button(role: .destructive) {
                         showingDeleteAlert = true
                     } label: {
