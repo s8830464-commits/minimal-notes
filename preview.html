@@ -1,777 +1,752 @@
 <!DOCTYPE html>
 <html lang="ru">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>NotesApp Preview - iOS Simulator</title>
-  <script src="https://www.gstatic.com/antigravity/web/dev/tailwindcss.min.js"></script>
-  <style>
-    @import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&family=Playfair+Display:ital,wght@0,500;0,600;1,400&display=swap');
+ <meta charset="UTF-8">
+ <meta name="viewport" content="width=device-width, initial-scale=1.0">
+ <title>NotesApp Preview - iOS Simulator</title>
+ <script src="https://www.gstatic.com/antigravity/web/dev/tailwindcss.min.js"></script>
+ <style>
+ @import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&family=Playfair+Display:ital,wght@0,500;0,600;1,400&display=swap');
 
-    body {
-      font-family: -apple-system, BlinkMacSystemFont, "SF Pro Text", "SF Pro Display", "Plus Jakarta Sans", sans-serif;
-      user-select: none;
-      -webkit-font-smoothing: antialiased;
-    }
+ body {
+  font-family: -apple-system, BlinkMacSystemFont, "SF Pro Text", "SF Pro Display", "Plus Jakarta Sans", sans-serif;
+  user-select: none;
+  -webkit-font-smoothing: antialiased;
+ }
 
-    .font-serif-ios {
-      font-family: "Playfair Display", "New York", Georgia, serif;
-    }
-    .font-mono-ios {
-      font-family: "JetBrains Mono", SFMono-Regular, Menlo, Monaco, monospace;
-    }
+ .font-serif-ios {
+  font-family: "Playfair Display", "New York", Georgia, serif;
+ }
+ .font-mono-ios {
+  font-family: "JetBrains Mono", SFMono-Regular, Menlo, Monaco, monospace;
+ }
 
-    /* Apple Spring Motion Easings */
-    :root {
-      --spring-apple: cubic-bezier(0.2, 0.9, 0.22, 1);
-      --spring-bouncy: cubic-bezier(0.34, 1.45, 0.64, 1);
-      --spring-press: cubic-bezier(0.25, 1, 0.5, 1);
-    }
+ /* Apple Spring Motion Easings */
+ :root {
+  --spring-apple: cubic-bezier(0.2, 0.9, 0.22, 1);
+  --spring-bouncy: cubic-bezier(0.34, 1.45, 0.64, 1);
+  --spring-press: cubic-bezier(0.25, 1, 0.5, 1);
+ }
 
-    /* Screen transition states */
-    .screen-view {
-      transition: transform 0.36s var(--spring-apple), opacity 0.36s ease, filter 0.36s ease;
-      will-change: transform, opacity;
-    }
+ /* Screen transition states */
+ .screen-view {
+  transition: transform 0.36s var(--spring-apple), opacity 0.36s ease, filter 0.36s ease;
+  will-change: transform, opacity;
+ }
 
-    .list-hidden-back {
-      transform: translateX(-24%) scale(0.96);
-      opacity: 0.5;
-      filter: brightness(0.8);
-      pointer-events: none;
-    }
+ .list-hidden-back {
+  transform: translateX(-24%) scale(0.96);
+  opacity: 0.5;
+  filter: brightness(0.8);
+  pointer-events: none;
+ }
 
-    .detail-hidden-right {
-      transform: translateX(100%);
-      pointer-events: none;
-      opacity: 0;
-    }
+ .detail-hidden-right {
+  transform: translateX(100%);
+  pointer-events: none;
+  opacity: 0;
+ }
 
-    .detail-active {
-      transform: translateX(0);
-      pointer-events: auto;
-      opacity: 1;
-    }
+ .detail-active {
+  transform: translateX(0);
+  pointer-events: auto;
+  opacity: 1;
+ }
 
-    /* Apple Spring Press Feedback */
-    .apple-press {
-      transition: transform 0.22s var(--spring-press), opacity 0.22s ease;
-      will-change: transform;
-    }
-    .apple-press:active {
-      transform: scale(0.91);
-      opacity: 0.82;
-    }
+ /* Apple Spring Press Feedback */
+ .apple-press {
+  transition: transform 0.22s var(--spring-press), opacity 0.22s ease;
+  will-change: transform;
+ }
+ .apple-press:active {
+  transform: scale(0.91);
+  opacity: 0.82;
+ }
 
-    /* Row item press */
-    .apple-row {
-      transition: transform 0.2s var(--spring-press), background-color 0.15s ease;
-      will-change: transform;
-    }
-    .apple-row:active {
-      transform: scale(0.985);
-    }
+ /* Row item press */
+ .apple-row {
+  transition: transform 0.2s var(--spring-press), background-color 0.15s ease;
+  will-change: transform;
+ }
+ .apple-row:active {
+  transform: scale(0.985);
+ }
 
-    /* Gear Rotation */
-    .gear-rotate {
-      transition: transform 0.4s var(--spring-bouncy);
-      will-change: transform;
-    }
-    .gear-rotate:active {
-      transform: rotate(60deg) scale(0.88);
-    }
+ /* Gear Rotation */
+ .gear-rotate {
+  transition: transform 0.4s var(--spring-bouncy);
+  will-change: transform;
+ }
+ .gear-rotate:active {
+  transform: rotate(60deg) scale(0.88);
+ }
 
-    /* Modal Sheet */
-    .ios-sheet {
-      transition: transform 0.38s var(--spring-apple);
-      will-change: transform;
-    }
-    .ios-sheet.hidden-sheet {
-      transform: translateY(105%);
-      pointer-events: none;
-    }
-    .ios-sheet.visible-sheet {
-      transform: translateY(0);
-      pointer-events: auto;
-    }
+ /* Modal Sheet */
+ .ios-sheet {
+  transition: transform 0.38s var(--spring-apple);
+  will-change: transform;
+ }
+ .ios-sheet.hidden-sheet {
+  transform: translateY(105%);
+  pointer-events: none;
+ }
+ .ios-sheet.visible-sheet {
+  transform: translateY(0);
+  pointer-events: auto;
+ }
 
-    /* Sheet Backdrop Overlay */
-    .sheet-backdrop {
-      transition: opacity 0.32s ease;
-      will-change: opacity;
-    }
+ /* Sheet Backdrop Overlay */
+ .sheet-backdrop {
+  transition: opacity 0.32s ease;
+  will-change: opacity;
+ }
 
-    /* iOS smooth scroll */
-    .ios-scroll::-webkit-scrollbar {
-      display: none;
-    }
-    .ios-scroll {
-      -ms-overflow-style: none;
-      scrollbar-width: none;
-    }
-  </style>
+ /* iOS smooth scroll */
+ .ios-scroll::-webkit-scrollbar {
+  display: none;
+ }
+ .ios-scroll {
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+ }
+ </style>
 </head>
 <body class="bg-neutral-900 text-neutral-100 flex flex-col items-center justify-center min-h-screen p-4 sm:p-6">
 
-  <!-- Header Controls -->
-  <div class="mb-4 flex items-center gap-3 bg-neutral-800/90 border border-neutral-700/60 px-4 py-2 rounded-full shadow-lg backdrop-blur">
-    <span class="text-xs font-medium text-neutral-300">Режим симулятора:</span>
-    <button id="toggleThemeBtn" class="apple-press flex items-center gap-1.5 text-xs bg-neutral-700 hover:bg-neutral-600 px-3 py-1.5 rounded-full font-medium">
-      <span id="themeIcon">🌙</span> <span id="themeLabel">Тёмная тема</span>
-    </button>
-    <div class="w-px h-4 bg-neutral-700"></div>
-    <button id="resetDemoBtn" class="apple-press text-xs text-neutral-400 hover:text-white px-2 py-1">
-      Сбросить демо
-    </button>
+ <!-- iPhone Frame Mockup -->
+ <div id="phoneCase" class="relative w-[385px] h-[780px] bg-black rounded-[52px] p-[10px] shadow-2xl shadow-black/80 ring-1 ring-white/10 transition-colors duration-300">
+ <!-- Physical Side Buttons & Bezel Glow -->
+ <div class="absolute -left-[13px] top-[140px] w-[3px] h-[28px] bg-neutral-700 rounded-l-md"></div>
+ <div class="absolute -left-[13px] top-[185px] w-[3px] h-[48px] bg-neutral-700 rounded-l-md"></div>
+ <div class="absolute -left-[13px] top-[245px] w-[3px] h-[48px] bg-neutral-700 rounded-l-md"></div>
+ <div class="absolute -right-[13px] top-[195px] w-[3px] h-[72px] bg-neutral-700 rounded-r-md"></div>
+
+ <!-- Screen Container -->
+ <div id="screen" class="relative w-full h-full bg-[#1c1c1e] text-white rounded-[42px] overflow-hidden flex flex-col transition-colors duration-300">
+
+  <!-- Dynamic Island / Status Bar -->
+  <div class="relative z-30 pt-3 px-7 flex items-center justify-between text-[13px] font-semibold tracking-tight">
+  <span id="clockText">9:41</span>
+  <!-- Dynamic Island Pill -->
+  <div class="absolute left-1/2 -translate-x-1/2 top-2.5 w-[110px] h-[30px] bg-black rounded-full flex items-center justify-between px-2.5 shadow-md">
+   <div class="w-2.5 h-2.5 rounded-full bg-neutral-800"></div>
+   <div class="w-2.5 h-2.5 rounded-full bg-[#0a1020] border border-blue-900/30"></div>
+  </div>
+  <div class="flex items-center gap-1.5">
+   <!-- Signal -->
+   <svg class="w-3.5 h-3.5 fill-current" viewBox="0 0 24 24"><path d="M12 3c-4.97 0-9 4.03-9 9 0 2.12.74 4.07 1.97 5.61L4.35 18.25c-.2.2-.2.51 0 .71.2.2.51.2.71 0l.64-.64C7.24 19.46 9.49 20.25 12 20.25c4.97 0 9-4.03 9-9s-4.03-9-9-9zm0 15.5c-3.58 0-6.5-2.92-6.5-6.5S8.42 5.5 12 5.5s6.5 2.92 6.5 6.5-2.92 6.5-6.5 6.5z"/></svg>
+   <!-- Wifi -->
+   <svg class="w-3.5 h-3.5 fill-current" viewBox="0 0 24 24"><path d="M12 4C7.31 4 3.07 5.9 0 8.98L12 21 24 8.98A16.88 16.88 0 0 0 12 4zm0 3c3.51 0 6.74 1.34 9.17 3.53L12 19.72 2.83 10.53A13.9 13.9 0 0 1 12 7z"/></svg>
+   <!-- Battery -->
+   <div class="w-5 h-2.5 border border-current rounded-sm p-0.5 flex items-center">
+   <div class="w-full h-full bg-current rounded-2xs"></div>
+   </div>
+  </div>
   </div>
 
-  <!-- iPhone Frame Mockup -->
-  <div id="phoneCase" class="relative w-[385px] h-[780px] bg-black rounded-[52px] p-[10px] shadow-2xl shadow-black/80 ring-1 ring-white/10 transition-colors duration-300">
-    <!-- Physical Side Buttons & Bezel Glow -->
-    <div class="absolute -left-[13px] top-[140px] w-[3px] h-[28px] bg-neutral-700 rounded-l-md"></div>
-    <div class="absolute -left-[13px] top-[185px] w-[3px] h-[48px] bg-neutral-700 rounded-l-md"></div>
-    <div class="absolute -left-[13px] top-[245px] w-[3px] h-[48px] bg-neutral-700 rounded-l-md"></div>
-    <div class="absolute -right-[13px] top-[195px] w-[3px] h-[72px] bg-neutral-700 rounded-r-md"></div>
+  <!-- ================= SCREEN 1: LIST VIEW ================= -->
+  <div id="listView" class="screen-view flex-1 flex flex-col h-full overflow-hidden">
+  <!-- Top Nav / Large Title -->
+  <div class="px-5 pt-4 pb-2">
+   <h1 class="text-[32px] font-bold tracking-tight text-white" id="listTitleText">Заметки</h1>
+   <!-- Search Bar with Spring Focus -->
+   <div class="mt-2.5 relative">
+   <svg class="absolute left-3 top-2.5 w-4 h-4 text-neutral-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.2" d="M21 21l-4.35-4.35M17 11a6 6 0 11-12 0 6 6 0 0112 0z"/>
+   </svg>
+   <input id="searchInput" type="text" placeholder="Поиск" class="w-full bg-[#2c2c2e] text-sm text-white placeholder-neutral-400 rounded-xl pl-9 pr-3 py-2 outline-none focus:ring-1 focus:ring-neutral-700 transition duration-200">
+   </div>
+  </div>
 
-    <!-- Screen Container -->
-    <div id="screen" class="relative w-full h-full bg-[#1c1c1e] text-white rounded-[42px] overflow-hidden flex flex-col transition-colors duration-300">
+  <!-- Notes List Scroll Area -->
+  <div id="notesContainer" class="flex-1 overflow-y-auto px-4 py-2 space-y-4 ios-scroll">
+   <!-- Rendered by JS -->
+  </div>
 
-      <!-- Dynamic Island / Status Bar -->
-      <div class="relative z-30 pt-3 px-7 flex items-center justify-between text-[13px] font-semibold tracking-tight">
-        <span id="clockText">9:41</span>
-        <!-- Dynamic Island Pill -->
-        <div class="absolute left-1/2 -translate-x-1/2 top-2.5 w-[110px] h-[30px] bg-black rounded-full flex items-center justify-between px-2.5 shadow-md">
-          <div class="w-2.5 h-2.5 rounded-full bg-neutral-800"></div>
-          <div class="w-2.5 h-2.5 rounded-full bg-[#0a1020] border border-blue-900/30"></div>
-        </div>
-        <div class="flex items-center gap-1.5">
-          <!-- Signal -->
-          <svg class="w-3.5 h-3.5 fill-current" viewBox="0 0 24 24"><path d="M12 3c-4.97 0-9 4.03-9 9 0 2.12.74 4.07 1.97 5.61L4.35 18.25c-.2.2-.2.51 0 .71.2.2.51.2.71 0l.64-.64C7.24 19.46 9.49 20.25 12 20.25c4.97 0 9-4.03 9-9s-4.03-9-9-9zm0 15.5c-3.58 0-6.5-2.92-6.5-6.5S8.42 5.5 12 5.5s6.5 2.92 6.5 6.5-2.92 6.5-6.5 6.5z"/></svg>
-          <!-- Wifi -->
-          <svg class="w-3.5 h-3.5 fill-current" viewBox="0 0 24 24"><path d="M12 4C7.31 4 3.07 5.9 0 8.98L12 21 24 8.98A16.88 16.88 0 0 0 12 4zm0 3c3.51 0 6.74 1.34 9.17 3.53L12 19.72 2.83 10.53A13.9 13.9 0 0 1 12 7z"/></svg>
-          <!-- Battery -->
-          <div class="w-5 h-2.5 border border-current rounded-sm p-0.5 flex items-center">
-            <div class="w-full h-full bg-current rounded-2xs"></div>
-          </div>
-        </div>
-      </div>
+  <!-- Bottom Bar: Centered Plus Button with Apple Spring Physics -->
+  <div class="h-16 border-t border-neutral-800/80 px-6 flex items-center justify-center bg-[#1c1c1e]/90 backdrop-blur" id="listBottomBar">
+   <button id="newNoteBtn" class="apple-press w-11 h-11 bg-[#3a3a3c] hover:bg-[#2c2c2e] active:scale-88 text-white rounded-full flex items-center justify-center shadow-lg shadow-neutral-800/30 transition-colors" title="Создать заметку">
+   <svg class="w-6 h-6 stroke-current fill-none stroke-[2.6]" viewBox="0 0 24 24">
+    <path stroke-linecap="round" stroke-linejoin="round" d="M12 4.5v15m7.5-7.5h-15"/>
+   </svg>
+   </button>
+  </div>
+  </div>
 
-      <!-- ================= SCREEN 1: LIST VIEW ================= -->
-      <div id="listView" class="screen-view flex-1 flex flex-col h-full overflow-hidden">
-        <!-- Top Nav / Large Title -->
-        <div class="px-5 pt-4 pb-2">
-          <h1 class="text-[32px] font-bold tracking-tight text-white" id="listTitleText">Заметки</h1>
-          <!-- Search Bar with Spring Focus -->
-          <div class="mt-2.5 relative">
-            <svg class="absolute left-3 top-2.5 w-4 h-4 text-neutral-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.2" d="M21 21l-4.35-4.35M17 11a6 6 0 11-12 0 6 6 0 0112 0z"/>
-            </svg>
-            <input id="searchInput" type="text" placeholder="Поиск" class="w-full bg-[#2c2c2e] text-sm text-white placeholder-neutral-400 rounded-xl pl-9 pr-3 py-2 outline-none focus:ring-1 focus:ring-neutral-700 transition duration-200">
-          </div>
-        </div>
+  <!-- ================= SCREEN 2: DETAIL / EDITOR VIEW ================= -->
+  <div id="detailView" class="screen-view detail-hidden-right absolute inset-0 z-20 bg-[#1c1c1e] flex flex-col h-full">
+  <!-- Top Toolbar -->
+  <div class="pt-10 px-4 pb-2 border-b border-neutral-800/80 flex items-center justify-between bg-[#1c1c1e]/95 backdrop-blur" id="detailNavBar">
+   <!-- Back Button -->
+   <button id="backToListBtn" class="apple-press flex items-center gap-1 text-[#3a3a3c] hover:text-neutral-700 text-sm font-semibold">
+   <svg class="w-5 h-5 stroke-current fill-none stroke-[2.5]" viewBox="0 0 24 24">
+    <path stroke-linecap="round" stroke-linejoin="round" d="M15.75 19.5L8.25 12l7.5-7.5"/>
+   </svg>
+   Заметки
+   </button>
 
-        <!-- Notes List Scroll Area -->
-        <div id="notesContainer" class="flex-1 overflow-y-auto px-4 py-2 space-y-4 ios-scroll">
-          <!-- Rendered by JS -->
-        </div>
+   <!-- Trailing Toolbar Buttons -->
+   <div class="flex items-center gap-3">
+   <!-- Settings button (Gear) with Apple Rotation Motion -->
+   <button id="openSettingsBtn" class="gear-rotate text-[#3a3a3c] hover:text-neutral-700 p-1.5 rounded-full" title="Параметры заметки">
+    <svg class="w-5 h-5 stroke-current fill-none stroke-[1.8]" viewBox="0 0 24 24">
+    <path stroke-linecap="round" stroke-linejoin="round" d="M9.594 3.94c.09-.542.56-.94 1.11-.94h2.593c.55 0 1.02.398 1.11.94l.213 1.281c.063.374.313.686.645.87.074.04.147.083.22.127.324.196.72.257 1.075.124l1.217-.456a1.125 1.125 0 011.37.49l1.296 2.247a1.125 1.125 0 01-.26 1.431l-1.003.827c-.293.24-.438.613-.431.992a6.759 6.759 0 010 .255c-.007.378.138.75.43.99l1.005.828c.424.35.534.954.26 1.43l-1.298 2.247a1.125 1.125 0 01-1.369.491l-1.217-.456c-.355-.133-.75-.072-1.076.124a6.57 6.57 0 01-.22.128c-.331.183-.581.495-.644.869l-.213 1.28c-.09.543-.56.941-1.11.941h-2.594c-.55 0-1.02-.398-1.11-.94l-.213-1.281c-.062-.374-.312-.686-.644-.869a6.52 6.52 0 01-.22-.127c-.325-.196-.72-.257-1.076-.124l-1.217.456a1.125 1.125 0 01-1.369-.49l-1.297-2.247a1.125 1.125 0 01.26-1.431l1.004-.827c.292-.24.437-.613.43-.992a6.932 6.932 0 010-.255c.007-.378-.138-.75-.43-.99l-1.004-.828a1.125 1.125 0 01-.26-1.43l1.297-2.247a1.125 1.125 0 011.37-.491l1.216.456c.356.133.751.072 1.076-.124.072-.044.146-.087.22-.128.332-.183.582-.495.644-.869l.214-1.281z"/>
+    <circle cx="12" cy="12" r="3"/>
+    </svg>
+   </button>
 
-        <!-- Bottom Bar: Centered Plus Button with Apple Spring Physics -->
-        <div class="h-16 border-t border-neutral-800/80 px-6 flex items-center justify-center bg-[#1c1c1e]/90 backdrop-blur" id="listBottomBar">
-          <button id="newNoteBtn" class="apple-press w-11 h-11 bg-[#3a3a3c] hover:bg-[#2c2c2e] active:scale-88 text-white rounded-full flex items-center justify-center shadow-lg shadow-neutral-800/30 transition-colors" title="Создать заметку">
-            <svg class="w-6 h-6 stroke-current fill-none stroke-[2.6]" viewBox="0 0 24 24">
-              <path stroke-linecap="round" stroke-linejoin="round" d="M12 4.5v15m7.5-7.5h-15"/>
-            </svg>
-          </button>
-        </div>
-      </div>
+   <!-- Share button -->
+   <button id="shareBtn" class="apple-press text-[#3a3a3c] hover:text-neutral-700 p-1.5" title="Поделиться">
+    <svg class="w-5 h-5 stroke-current fill-none stroke-[2]" viewBox="0 0 24 24">
+    <path stroke-linecap="round" stroke-linejoin="round" d="M9 8.25H7.5a2.25 2.25 0 00-2.25 2.25v9a2.25 2.25 0 002.25 2.25h9a2.25 2.25 0 002.25-2.25v-9a2.25 2.25 0 00-2.25-2.25H15M12 3v12m0-12l-3 3m3-3l3 3"/>
+    </svg>
+   </button>
 
-      <!-- ================= SCREEN 2: DETAIL / EDITOR VIEW ================= -->
-      <div id="detailView" class="screen-view detail-hidden-right absolute inset-0 z-20 bg-[#1c1c1e] flex flex-col h-full">
-        <!-- Top Toolbar -->
-        <div class="pt-10 px-4 pb-2 border-b border-neutral-800/80 flex items-center justify-between bg-[#1c1c1e]/95 backdrop-blur" id="detailNavBar">
-          <!-- Back Button -->
-          <button id="backToListBtn" class="apple-press flex items-center gap-1 text-[#3a3a3c] hover:text-neutral-700 text-sm font-semibold">
-            <svg class="w-5 h-5 stroke-current fill-none stroke-[2.5]" viewBox="0 0 24 24">
-              <path stroke-linecap="round" stroke-linejoin="round" d="M15.75 19.5L8.25 12l7.5-7.5"/>
-            </svg>
-            Заметки
-          </button>
+   <!-- Trash button -->
+   <button id="deleteDetailBtn" class="apple-press text-red-500 hover:text-red-400 p-1.5" title="Удалить">
+    <svg class="w-5 h-5 stroke-current fill-none stroke-[2]" viewBox="0 0 24 24">
+    <path stroke-linecap="round" stroke-linejoin="round" d="M14.74 9l-.346 9m-4.788 0L9.26 9m9.968-3.21c.342.052.682.107 1.022.166m-1.022-.165L18.16 19.673a2.25 2.25 0 01-2.244 2.077H8.084a2.25 2.25 0 01-2.244-2.077L4.772 5.79m14.456 0a48.108 48.108 0 00-3.478-.397m-12 .562c.34-.059.68-.114 1.022-.165m0 0a48.11 48.11 0 013.478-.397m7.5 0v-.916c0-1.18-.91-2.164-2.09-2.201a51.964 51.964 0 00-3.32 0c-1.18.037-2.09 1.022-2.09 2.201v.916m7.5 0a48.667 48.667 0 00-7.5 0"/>
+    </svg>
+   </button>
 
-          <!-- Trailing Toolbar Buttons -->
-          <div class="flex items-center gap-3">
-            <!-- Settings button (Gear) with Apple Rotation Motion -->
-            <button id="openSettingsBtn" class="gear-rotate text-[#3a3a3c] hover:text-neutral-700 p-1.5 rounded-full" title="Параметры заметки">
-              <svg class="w-5 h-5 stroke-current fill-none stroke-[1.8]" viewBox="0 0 24 24">
-                <path stroke-linecap="round" stroke-linejoin="round" d="M9.594 3.94c.09-.542.56-.94 1.11-.94h2.593c.55 0 1.02.398 1.11.94l.213 1.281c.063.374.313.686.645.87.074.04.147.083.22.127.324.196.72.257 1.075.124l1.217-.456a1.125 1.125 0 011.37.49l1.296 2.247a1.125 1.125 0 01-.26 1.431l-1.003.827c-.293.24-.438.613-.431.992a6.759 6.759 0 010 .255c-.007.378.138.75.43.99l1.005.828c.424.35.534.954.26 1.43l-1.298 2.247a1.125 1.125 0 01-1.369.491l-1.217-.456c-.355-.133-.75-.072-1.076.124a6.57 6.57 0 01-.22.128c-.331.183-.581.495-.644.869l-.213 1.28c-.09.543-.56.941-1.11.941h-2.594c-.55 0-1.02-.398-1.11-.94l-.213-1.281c-.062-.374-.312-.686-.644-.869a6.52 6.52 0 01-.22-.127c-.325-.196-.72-.257-1.076-.124l-1.217.456a1.125 1.125 0 01-1.369-.49l-1.297-2.247a1.125 1.125 0 01.26-1.431l1.004-.827c.292-.24.437-.613.43-.992a6.932 6.932 0 010-.255c.007-.378-.138-.75-.43-.99l-1.004-.828a1.125 1.125 0 01-.26-1.43l1.297-2.247a1.125 1.125 0 011.37-.491l1.216.456c.356.133.751.072 1.076-.124.072-.044.146-.087.22-.128.332-.183.582-.495.644-.869l.214-1.281z"/>
-                <circle cx="12" cy="12" r="3"/>
-              </svg>
-            </button>
+   <!-- Done Button -->
+   <button id="doneEditingBtn" class="apple-press text-[#3a3a3c] hover:text-neutral-700 text-sm font-semibold pl-1">
+    Готово
+   </button>
+   </div>
+  </div>
 
-            <!-- Share button -->
-            <button id="shareBtn" class="apple-press text-[#3a3a3c] hover:text-neutral-700 p-1.5" title="Поделиться">
-              <svg class="w-5 h-5 stroke-current fill-none stroke-[2]" viewBox="0 0 24 24">
-                <path stroke-linecap="round" stroke-linejoin="round" d="M9 8.25H7.5a2.25 2.25 0 00-2.25 2.25v9a2.25 2.25 0 002.25 2.25h9a2.25 2.25 0 002.25-2.25v-9a2.25 2.25 0 00-2.25-2.25H15M12 3v12m0-12l-3 3m3-3l3 3"/>
-              </svg>
-            </button>
+  <!-- Editor Content (Pure Minimal by Default) -->
+  <div class="flex-1 p-5 overflow-y-auto flex flex-col relative ios-scroll">
+   <textarea id="noteTextarea" placeholder="Начните писать..." class="w-full flex-1 bg-transparent text-white placeholder-neutral-500 outline-none resize-none leading-relaxed tracking-normal font-sans transition-all duration-200" style="font-size: 17px;"></textarea>
+  </div>
 
-            <!-- Trash button -->
-            <button id="deleteDetailBtn" class="apple-press text-red-500 hover:text-red-400 p-1.5" title="Удалить">
-              <svg class="w-5 h-5 stroke-current fill-none stroke-[2]" viewBox="0 0 24 24">
-                <path stroke-linecap="round" stroke-linejoin="round" d="M14.74 9l-.346 9m-4.788 0L9.26 9m9.968-3.21c.342.052.682.107 1.022.166m-1.022-.165L18.16 19.673a2.25 2.25 0 01-2.244 2.077H8.084a2.25 2.25 0 01-2.244-2.077L4.772 5.79m14.456 0a48.108 48.108 0 00-3.478-.397m-12 .562c.34-.059.68-.114 1.022-.165m0 0a48.11 48.11 0 013.478-.397m7.5 0v-.916c0-1.18-.91-2.164-2.09-2.201a51.964 51.964 0 00-3.32 0c-1.18.037-2.09 1.022-2.09 2.201v.916m7.5 0a48.667 48.667 0 00-7.5 0"/>
-              </svg>
-            </button>
+  <!-- Footer Bar: Minimal Word Count & Last Modified -->
+  <div id="editorFooter" class="h-10 px-5 border-t border-neutral-800/80 bg-[#242426] flex items-center justify-between text-[11px] text-neutral-400 font-medium">
+   <span id="wordCharStats">0 слов, 0 симв.</span>
+   <span id="dateModifiedText">Изменено только что</span>
+  </div>
+  </div>
 
-            <!-- Done Button -->
-            <button id="doneEditingBtn" class="apple-press text-[#3a3a3c] hover:text-neutral-700 text-sm font-semibold pl-1">
-              Готово
-            </button>
-          </div>
-        </div>
+  <!-- Backdrop for Modal Sheet -->
+  <div id="sheetBackdrop" class="sheet-backdrop hidden opacity-0 absolute inset-0 z-35 bg-black/50 backdrop-blur-[2px]"></div>
 
-        <!-- Editor Content (Pure Minimal by Default) -->
-        <div class="flex-1 p-5 overflow-y-auto flex flex-col relative ios-scroll">
-          <textarea id="noteTextarea" placeholder="Начните писать..." class="w-full flex-1 bg-transparent text-white placeholder-neutral-500 outline-none resize-none leading-relaxed tracking-normal font-sans transition-all duration-200" style="font-size: 17px;"></textarea>
-        </div>
+  <!-- ================= MODAL SHEET: ADVANCED SETTINGS ================= -->
+  <div id="settingsSheet" class="ios-sheet hidden-sheet absolute inset-x-0 bottom-0 top-[70px] z-40 bg-[#2c2c2e] rounded-t-[32px] shadow-2xl flex flex-col overflow-hidden border-t border-neutral-700/50">
+  <!-- Sheet Grabber with Drag Down Handle -->
+  <div id="sheetGrabber" class="pt-3 pb-2 flex justify-center cursor-grab active:cursor-grabbing">
+   <div class="w-10 h-1.5 bg-neutral-500/60 rounded-full hover:bg-neutral-400 transition"></div>
+  </div>
 
-        <!-- Footer Bar: Minimal Word Count & Last Modified -->
-        <div id="editorFooter" class="h-10 px-5 border-t border-neutral-800/80 bg-[#242426] flex items-center justify-between text-[11px] text-neutral-400 font-medium">
-          <span id="wordCharStats">0 слов, 0 симв.</span>
-          <span id="dateModifiedText">Изменено только что</span>
-        </div>
-      </div>
+  <!-- Sheet Header (Clean, swipe to dismiss) -->
+  <div class="px-5 py-2 flex items-center justify-between border-b border-neutral-750 cursor-pointer" id="sheetHeader">
+   <h2 class="text-base font-bold text-white">Параметры заметки</h2>
+   <span class="text-[11px] text-neutral-400 flex items-center gap-1">
+   <span>Смахните</span>
+   <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/></svg>
+   </span>
+  </div>
 
-      <!-- Backdrop for Modal Sheet -->
-      <div id="sheetBackdrop" class="sheet-backdrop hidden opacity-0 absolute inset-0 z-35 bg-black/50 backdrop-blur-[2px]"></div>
+  <!-- Sheet Form Items -->
+  <div class="flex-1 overflow-y-auto px-4 py-3 space-y-4 ios-scroll text-sm">
 
-      <!-- ================= MODAL SHEET: ADVANCED SETTINGS ================= -->
-      <div id="settingsSheet" class="ios-sheet hidden-sheet absolute inset-x-0 bottom-0 top-[70px] z-40 bg-[#2c2c2e] rounded-t-[32px] shadow-2xl flex flex-col overflow-hidden border-t border-neutral-700/50">
-        <!-- Sheet Grabber with Drag Down Handle -->
-        <div id="sheetGrabber" class="pt-3 pb-2 flex justify-center cursor-grab active:cursor-grabbing">
-          <div class="w-10 h-1.5 bg-neutral-500/60 rounded-full hover:bg-neutral-400 transition"></div>
-        </div>
-
-        <!-- Sheet Header (Clean, swipe to dismiss) -->
-        <div class="px-5 py-2 flex items-center justify-between border-b border-neutral-750 cursor-pointer" id="sheetHeader">
-          <h2 class="text-base font-bold text-white">Параметры заметки</h2>
-          <span class="text-[11px] text-neutral-400 flex items-center gap-1">
-            <span>Смахните</span>
-            <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/></svg>
-          </span>
-        </div>
-
-        <!-- Sheet Form Items -->
-        <div class="flex-1 overflow-y-auto px-4 py-3 space-y-4 ios-scroll text-sm">
-
-          <!-- Section: Typography -->
-          <div>
-            <div class="text-[11px] uppercase tracking-wider text-neutral-400 font-semibold px-2 mb-1.5">Оформление текста</div>
-            <div class="bg-[#1c1c1e] rounded-2xl p-3.5 space-y-3.5 border border-neutral-700/40">
-              <!-- Font Style Selector -->
-              <div class="flex items-center justify-between">
-                <span class="text-neutral-200">Стиль шрифта</span>
-                <select id="fontStyleSelect" class="bg-[#2c2c2e] text-white text-xs font-medium px-2.5 py-1.5 rounded-lg outline-none border border-neutral-600 focus:border-neutral-700 transition">
-                  <option value="sans">Стандартный</option>
-                  <option value="serif">С засечками</option>
-                  <option value="mono">Моноширинный</option>
-                </select>
-              </div>
-
-              <!-- Font Size Slider with Live Spring Scale -->
-              <div>
-                <div class="flex justify-between text-xs mb-1.5">
-                  <span class="text-neutral-300">Размер шрифта</span>
-                  <span id="fontSizeDisplay" class="text-neutral-400 font-mono font-medium">17 пт</span>
-                </div>
-                <input id="fontSizeSlider" type="range" min="14" max="28" value="17" class="w-full accent-[#3a3a3c] cursor-pointer">
-              </div>
-
-              <!-- Read Only Toggle -->
-              <div class="flex items-center justify-between pt-1 border-t border-neutral-800">
-                <div>
-                  <div class="text-neutral-200 text-xs font-medium">Режим чтения</div>
-                  <div class="text-[11px] text-neutral-400">Защита от случайных правок</div>
-                </div>
-                <input id="readOnlyToggle" type="checkbox" class="w-5 h-5 accent-[#3a3a3c] rounded cursor-pointer transition">
-              </div>
-            </div>
-          </div>
-
-          <!-- Section: Actions -->
-          <div>
-            <div class="text-[11px] uppercase tracking-wider text-neutral-400 font-semibold px-2 mb-1.5">Действия</div>
-            <div class="bg-[#1c1c1e] rounded-2xl divide-y divide-neutral-800 border border-neutral-700/40">
-              <button id="copyAllTextBtn" class="apple-row w-full px-3.5 py-3 flex items-center justify-between text-neutral-200 rounded-t-2xl text-left">
-                <span class="flex items-center gap-2">
-                  <svg class="w-4 h-4 text-[#3a3a3c]" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7v8a2 2 0 002 2h6M8 7V5a2 2 0 012-2h4.586a1 1 0 01.707.293l4.414 4.414a1 1 0 01.293.707V15a2 2 0 01-2 2h-2M8 7H6a2 2 0 00-2 2v10a2 2 0 002 2h8a2 2 0 002-2v-2"/></svg>
-                  Скопировать весь текст
-                </span>
-                <span id="copyToast" class="text-xs text-green-400 font-medium hidden">Скопировано!</span>
-              </button>
-
-              <button id="cleanWhitespaceBtn" class="apple-row w-full px-3.5 py-3 flex items-center justify-between text-neutral-200 rounded-b-2xl text-left">
-                <span class="flex items-center gap-2">
-                  <svg class="w-4 h-4 text-[#3a3a3c]" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
-                  Исправить ошибки в тексте
-                </span>
-                <span id="fixErrorsNotice" class="text-xs text-neutral-700 font-medium hidden">Скоро настроим</span>
-              </button>
-            </div>
-          </div>
-
-          <!-- Section: Details Stats -->
-          <div>
-            <div class="text-[11px] uppercase tracking-wider text-neutral-400 font-semibold px-2 mb-1.5">Информация</div>
-            <div class="bg-[#1c1c1e] rounded-2xl p-3.5 space-y-2 border border-neutral-700/40 text-xs">
-              <div class="flex justify-between text-neutral-300">
-                <span>Символов:</span>
-                <span id="statChars" class="font-mono text-neutral-400">0</span>
-              </div>
-              <div class="flex justify-between text-neutral-300">
-                <span>Слов:</span>
-                <span id="statWords" class="font-mono text-neutral-400">0</span>
-              </div>
-              <div class="flex justify-between text-neutral-300">
-                <span>Время чтения:</span>
-                <span id="statReadingTime" class="text-neutral-400">~1 мин</span>
-              </div>
-            </div>
-          </div>
-
-        </div>
-      </div>
-
-      <!-- Home Indicator Bar -->
-      <div class="pb-2 pt-1 flex justify-center z-30">
-        <div class="w-32 h-1 bg-neutral-500/40 rounded-full"></div>
-      </div>
-
+   <!-- Section: Typography -->
+   <div>
+   <div class="text-[11px] uppercase tracking-wider text-neutral-400 font-semibold px-2 mb-1.5">Оформление текста</div>
+   <div class="bg-[#1c1c1e] rounded-2xl p-3.5 space-y-3.5 border border-neutral-700/40">
+    <!-- Font Style Selector -->
+    <div class="flex items-center justify-between">
+    <span class="text-neutral-200">Стиль шрифта</span>
+    <select id="fontStyleSelect" class="bg-[#2c2c2e] text-white text-xs font-medium px-2.5 py-1.5 rounded-lg outline-none border border-neutral-600 focus:border-neutral-700 transition">
+     <option value="sans">Стандартный</option>
+     <option value="serif">С засечками</option>
+     <option value="mono">Моноширинный</option>
+    </select>
     </div>
+
+    <!-- Font Size Slider with Live Spring Scale -->
+    <div>
+    <div class="flex justify-between text-xs mb-1.5">
+     <span class="text-neutral-300">Размер шрифта</span>
+     <span id="fontSizeDisplay" class="text-neutral-400 font-mono font-medium">17 пт</span>
+    </div>
+    <input id="fontSizeSlider" type="range" min="14" max="28" value="17" class="w-full accent-[#3a3a3c] cursor-pointer">
+    </div>
+
+    <!-- Read Only Toggle -->
+    <div class="flex items-center justify-between pt-1 border-t border-neutral-800">
+    <div>
+     <div class="text-neutral-200 text-xs font-medium">Режим чтения</div>
+     <div class="text-[11px] text-neutral-400">Защита от случайных правок</div>
+    </div>
+    <input id="readOnlyToggle" type="checkbox" class="w-5 h-5 accent-[#3a3a3c] rounded cursor-pointer transition">
+    </div>
+   </div>
+   </div>
+
+   <!-- Section: Actions -->
+   <div>
+   <div class="text-[11px] uppercase tracking-wider text-neutral-400 font-semibold px-2 mb-1.5">Действия</div>
+   <div class="bg-[#1c1c1e] rounded-2xl divide-y divide-neutral-800 border border-neutral-700/40">
+    <button id="copyAllTextBtn" class="apple-row w-full px-3.5 py-3 flex items-center justify-between text-neutral-200 rounded-t-2xl text-left">
+    <span class="flex items-center gap-2">
+     <svg class="w-4 h-4 text-[#3a3a3c]" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7v8a2 2 0 002 2h6M8 7V5a2 2 0 012-2h4.586a1 1 0 01.707.293l4.414 4.414a1 1 0 01.293.707V15a2 2 0 01-2 2h-2M8 7H6a2 2 0 00-2 2v10a2 2 0 002 2h8a2 2 0 002-2v-2"/></svg>
+     Скопировать весь текст
+    </span>
+    <span id="copyToast" class="text-xs text-green-400 font-medium hidden">Скопировано!</span>
+    </button>
+
+    <button id="cleanWhitespaceBtn" class="apple-row w-full px-3.5 py-3 flex items-center justify-between text-neutral-200 rounded-b-2xl text-left">
+    <span class="flex items-center gap-2">
+     <svg class="w-4 h-4 text-[#3a3a3c]" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
+     Исправить ошибки в тексте
+    </span>
+    <span id="fixErrorsNotice" class="text-xs text-neutral-700 font-medium hidden">Скоро настроим</span>
+    </button>
+   </div>
+   </div>
+
+   <!-- Section: Details Stats -->
+   <div>
+   <div class="text-[11px] uppercase tracking-wider text-neutral-400 font-semibold px-2 mb-1.5">Информация</div>
+   <div class="bg-[#1c1c1e] rounded-2xl p-3.5 space-y-2 border border-neutral-700/40 text-xs">
+    <div class="flex justify-between text-neutral-300">
+    <span>Символов:</span>
+    <span id="statChars" class="font-mono text-neutral-400">0</span>
+    </div>
+    <div class="flex justify-between text-neutral-300">
+    <span>Слов:</span>
+    <span id="statWords" class="font-mono text-neutral-400">0</span>
+    </div>
+    <div class="flex justify-between text-neutral-300">
+    <span>Время чтения:</span>
+    <span id="statReadingTime" class="text-neutral-400">~1 мин</span>
+    </div>
+   </div>
+   </div>
+
+  </div>
   </div>
 
-  <script>
-    // State
-    let isDarkMode = false;
-    let currentNoteId = null;
-    let notes = [
-      {
-        id: "1",
-        text: "Добро пожаловать в Заметки ✨\n\nЭто минималистичное и быстрое приложение:\n\n• Первая строка автоматически становится заголовком.\n• Свайп вправо закрепляет заметку.\n• Свайп влево удаляет заметку.\n• Все данные хранятся локально.",
-        isPinned: true,
-        date: "14:20"
-      },
-      {
-        id: "2",
-        text: "Список покупок к выходным\n\n1. Молоко овсяное\n2. Свежий кофе в зернах\n3. Сыр пармезан\n4. Зелень и руккола",
-        isPinned: false,
-        date: "Вчера"
-      },
-      {
-        id: "3",
-        text: "Идеи для нового проекта\n\nСделать красивый предпросмотр в стиле iPhone для быстрой оценки дизайна и эргономики.",
-        isPinned: false,
-        date: "9 окт"
-      }
-    ];
+  <!-- Home Indicator Bar -->
+  <div class="pb-2 pt-1 flex justify-center z-30">
+  <div class="w-32 h-1 bg-neutral-500/40 rounded-full"></div>
+  </div>
 
-    let settings = {
-      fontStyle: 'sans',
-      fontSize: 17,
-      readOnly: false
-    };
+ </div>
+ </div>
 
-    // DOM Elements
-    const screen = document.getElementById('screen');
-    const listView = document.getElementById('listView');
-    const detailView = document.getElementById('detailView');
-    const settingsSheet = document.getElementById('settingsSheet');
-    const sheetBackdrop = document.getElementById('sheetBackdrop');
-    const sheetHeader = document.getElementById('sheetHeader');
-    const sheetGrabber = document.getElementById('sheetGrabber');
-    const notesContainer = document.getElementById('notesContainer');
-    const searchInput = document.getElementById('searchInput');
-    const noteTextarea = document.getElementById('noteTextarea');
-    const wordCharStats = document.getElementById('wordCharStats');
-    const dateModifiedText = document.getElementById('dateModifiedText');
-    const openSettingsBtn = document.getElementById('openSettingsBtn');
-    const fontStyleSelect = document.getElementById('fontStyleSelect');
-    const fontSizeSlider = document.getElementById('fontSizeSlider');
-    const fontSizeDisplay = document.getElementById('fontSizeDisplay');
-    const readOnlyToggle = document.getElementById('readOnlyToggle');
-    const copyAllTextBtn = document.getElementById('copyAllTextBtn');
-    const copyToast = document.getElementById('copyToast');
-    const cleanWhitespaceBtn = document.getElementById('cleanWhitespaceBtn');
-    const fixErrorsNotice = document.getElementById('fixErrorsNotice');
-    const statChars = document.getElementById('statChars');
-    const statWords = document.getElementById('statWords');
-    const statReadingTime = document.getElementById('statReadingTime');
-    const toggleThemeBtn = document.getElementById('toggleThemeBtn');
-    const themeIcon = document.getElementById('themeIcon');
-    const themeLabel = document.getElementById('themeLabel');
-    const newNoteBtn = document.getElementById('newNoteBtn');
-    const backToListBtn = document.getElementById('backToListBtn');
-    const deleteDetailBtn = document.getElementById('deleteDetailBtn');
-    const doneEditingBtn = document.getElementById('doneEditingBtn');
-    const resetDemoBtn = document.getElementById('resetDemoBtn');
+ <script>
+ // State
+ let isDarkMode = false;
+ let currentNoteId = null;
+ let notes = [
+  {
+  id: "1",
+  text: "Добро пожаловать в Заметки \n\nЭто минималистичное и быстрое приложение:\n\n• Первая строка автоматически становится заголовком.\n• Свайп вправо закрепляет заметку.\n• Свайп влево удаляет заметку.\n• Все данные хранятся локально.",
+  isPinned: true,
+  date: "14:20"
+  },
+  {
+  id: "2",
+  text: "Список покупок к выходным\n\n1. Молоко овсяное\n2. Свежий кофе в зернах\n3. Сыр пармезан\n4. Зелень и руккола",
+  isPinned: false,
+  date: "Вчера"
+  },
+  {
+  id: "3",
+  text: "Идеи для нового проекта\n\nСделать красивый предпросмотр в стиле iPhone для быстрой оценки дизайна и эргономики.",
+  isPinned: false,
+  date: "9 окт"
+  }
+ ];
 
-    // Render Note List with smooth Apple row hover/active
-    function renderNotes() {
-      const query = searchInput.value.toLowerCase().trim();
-      const filtered = notes.filter(n => n.text.toLowerCase().includes(query));
+ let settings = {
+  fontStyle: 'sans',
+  fontSize: 17,
+  readOnly: false
+ };
 
-      const pinned = filtered.filter(n => n.isPinned);
-      const other = filtered.filter(n => !n.isPinned);
+ // DOM Elements
+ const screen = document.getElementById('screen');
+ const listView = document.getElementById('listView');
+ const detailView = document.getElementById('detailView');
+ const settingsSheet = document.getElementById('settingsSheet');
+ const sheetBackdrop = document.getElementById('sheetBackdrop');
+ const sheetHeader = document.getElementById('sheetHeader');
+ const sheetGrabber = document.getElementById('sheetGrabber');
+ const notesContainer = document.getElementById('notesContainer');
+ const searchInput = document.getElementById('searchInput');
+ const noteTextarea = document.getElementById('noteTextarea');
+ const wordCharStats = document.getElementById('wordCharStats');
+ const dateModifiedText = document.getElementById('dateModifiedText');
+ const openSettingsBtn = document.getElementById('openSettingsBtn');
+ const fontStyleSelect = document.getElementById('fontStyleSelect');
+ const fontSizeSlider = document.getElementById('fontSizeSlider');
+ const fontSizeDisplay = document.getElementById('fontSizeDisplay');
+ const readOnlyToggle = document.getElementById('readOnlyToggle');
+ const copyAllTextBtn = document.getElementById('copyAllTextBtn');
+ const copyToast = document.getElementById('copyToast');
+ const cleanWhitespaceBtn = document.getElementById('cleanWhitespaceBtn');
+ const fixErrorsNotice = document.getElementById('fixErrorsNotice');
+ const statChars = document.getElementById('statChars');
+ const statWords = document.getElementById('statWords');
+ const statReadingTime = document.getElementById('statReadingTime');
+ 
+ 
+ 
+ const newNoteBtn = document.getElementById('newNoteBtn');
+ const backToListBtn = document.getElementById('backToListBtn');
+ const deleteDetailBtn = document.getElementById('deleteDetailBtn');
+ const doneEditingBtn = document.getElementById('doneEditingBtn');
+ 
 
-      notesContainer.innerHTML = '';
+ // Render Note List with smooth Apple row hover/active
+ function renderNotes() {
+  const query = searchInput.value.toLowerCase().trim();
+  const filtered = notes.filter(n => n.text.toLowerCase().includes(query));
 
-      if (filtered.length === 0) {
-        notesContainer.innerHTML = `
-          <div class="py-16 flex flex-col items-center justify-center text-neutral-500">
-            <svg class="w-12 h-12 stroke-[1.2] stroke-current fill-none mb-2" viewBox="0 0 24 24">
-              <path stroke-linecap="round" stroke-linejoin="round" d="M12 9v3.75m9-.75a9 9 0 11-18 0 9 9 0 0118 0zm-9 3.75h.008v.008H12v-.008z"/>
-            </svg>
-            <span class="text-sm font-medium">Ничего не найдено</span>
-          </div>
-        `;
-        return;
-      }
+  const pinned = filtered.filter(n => n.isPinned);
+  const other = filtered.filter(n => !n.isPinned);
 
-      function createSection(title, list) {
-        if (list.length === 0) return '';
-        let html = `<div>`;
-        if (title) {
-          html += `<div class="text-[11px] font-semibold tracking-wide text-[var(--text-secondary)] uppercase px-2 mb-1.5">${title}</div>`;
-        }
-        html += `<div class="bg-[var(--card-bg)] rounded-2xl divide-y divide-[var(--divider-color)] overflow-hidden shadow-sm border border-[var(--border-color)]">`;
-        list.forEach(note => {
-          const lines = note.text.split('\n').filter(l => l.trim().length > 0);
-          const noteTitle = lines[0] || 'Новая заметка';
-          const noteBody = lines[1] || 'Нет дополнительного текста';
+  notesContainer.innerHTML = '';
 
-          html += `
-            <div onclick="openNote('${note.id}')" class="apple-row p-3.5 hover:bg-neutral-800/40 cursor-pointer flex items-start justify-between group">
-              <div class="flex-1 min-w-0 pr-3">
-                <div class="flex items-center gap-1.5">
-                  ${note.isPinned ? '<span class="text-[#3a3a3c] text-xs">📌</span>' : ''}
-                  <span class="font-semibold text-sm text-[var(--text-primary)] truncate">${escapeHtml(noteTitle)}</span>
-                </div>
-                <div class="flex items-center gap-2 text-xs text-[var(--text-secondary)] mt-1 truncate">
-                  <span class="font-medium shrink-0">${note.date}</span>
-                  <span class="truncate">${escapeHtml(noteBody)}</span>
-                </div>
-              </div>
-              <span class="text-[var(--text-secondary)] text-xs font-bold pt-1">›</span>
-            </div>
-          `;
-        });
-        html += `</div></div>`;
-        return html;
-      }
+  if (filtered.length === 0) {
+  notesContainer.innerHTML = `
+   <div class="py-16 flex flex-col items-center justify-center text-neutral-500">
+   <svg class="w-12 h-12 stroke-[1.2] stroke-current fill-none mb-2" viewBox="0 0 24 24">
+    <path stroke-linecap="round" stroke-linejoin="round" d="M12 9v3.75m9-.75a9 9 0 11-18 0 9 9 0 0118 0zm-9 3.75h.008v.008H12v-.008z"/>
+   </svg>
+   <span class="text-sm font-medium">Ничего не найдено</span>
+   </div>
+  `;
+  return;
+  }
 
-      let contentHtml = '';
-      if (pinned.length > 0) contentHtml += createSection('Закреплённые', pinned);
-      if (other.length > 0) contentHtml += createSection(pinned.length > 0 ? 'Заметки' : '', other);
+  function createSection(title, list) {
+  if (list.length === 0) return '';
+  let html = `<div>`;
+  if (title) {
+   html += `<div class="text-[11px] font-semibold tracking-wide text-[var(--text-secondary)] uppercase px-2 mb-1.5">${title}</div>`;
+  }
+  html += `<div class="bg-[var(--card-bg)] rounded-2xl divide-y divide-[var(--divider-color)] overflow-hidden shadow-sm border border-[var(--border-color)]">`;
+  list.forEach(note => {
+   const lines = note.text.split('\n').filter(l => l.trim().length > 0);
+   const noteTitle = lines[0] || 'Новая заметка';
+   const noteBody = lines[1] || 'Нет дополнительного текста';
 
-      notesContainer.innerHTML = contentHtml;
+   html += `
+   <div onclick="openNote('${note.id}')" class="apple-row p-3.5 hover:bg-neutral-800/40 cursor-pointer flex items-start justify-between group">
+    <div class="flex-1 min-w-0 pr-3">
+    <div class="flex items-center gap-1.5">
+     ${note.isPinned ? '<span class="text-[#3a3a3c] text-xs"></span>' : ''}
+     <span class="font-semibold text-sm text-[var(--text-primary)] truncate">${escapeHtml(noteTitle)}</span>
+    </div>
+    <div class="flex items-center gap-2 text-xs text-[var(--text-secondary)] mt-1 truncate">
+     <span class="font-medium shrink-0">${note.date}</span>
+     <span class="truncate">${escapeHtml(noteBody)}</span>
+    </div>
+    </div>
+    <span class="text-[var(--text-secondary)] text-xs font-bold pt-1">›</span>
+   </div>
+   `;
+  });
+  html += `</div></div>`;
+  return html;
+  }
+
+  let contentHtml = '';
+  if (pinned.length > 0) contentHtml += createSection('Закреплённые', pinned);
+  if (other.length > 0) contentHtml += createSection(pinned.length > 0 ? 'Заметки' : '', other);
+
+  notesContainer.innerHTML = contentHtml;
+ }
+
+ function escapeHtml(text) {
+  const map = { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#039;' };
+  return text.replace(/[&<>"']/g, m => map[m]);
+ }
+
+ // Open Note: Apple Push Transition
+ window.openNote = function(id) {
+  currentNoteId = id;
+  const note = notes.find(n => n.id === id);
+  if (!note) return;
+
+  noteTextarea.value = note.text;
+  updateStats();
+  applyEditorSettings();
+
+  // Apple push animation: list slides back, detail slides in
+  listView.classList.add('list-hidden-back');
+  detailView.classList.remove('detail-hidden-right');
+  detailView.classList.add('detail-active');
+
+  closeSettings();
+ };
+
+ function updateStats() {
+  const text = noteTextarea.value;
+  const chars = text.length;
+  const words = text.trim() === '' ? 0 : text.trim().split(/\s+/).length;
+
+  wordCharStats.textContent = `${words} слов, ${chars} симв.`;
+  statChars.textContent = chars;
+  statWords.textContent = words;
+  statReadingTime.textContent = `~${Math.max(1, Math.round(words / 180))} мин`;
+
+  if (currentNoteId) {
+  const note = notes.find(n => n.id === currentNoteId);
+  if (note) note.text = text;
+  }
+ }
+
+ function applyEditorSettings() {
+  noteTextarea.style.fontSize = `${settings.fontSize}px`;
+  fontSizeDisplay.textContent = `${settings.fontSize} пт`;
+  fontSizeSlider.value = settings.fontSize;
+
+  noteTextarea.classList.remove('font-sans', 'font-serif-ios', 'font-mono-ios');
+  if (settings.fontStyle === 'serif') noteTextarea.classList.add('font-serif-ios');
+  else if (settings.fontStyle === 'mono') noteTextarea.classList.add('font-mono-ios');
+  else noteTextarea.classList.add('font-sans');
+  fontStyleSelect.value = settings.fontStyle;
+
+  noteTextarea.readOnly = settings.readOnly;
+  readOnlyToggle.checked = settings.readOnly;
+  if (settings.readOnly) {
+  wordCharStats.innerHTML = `<span class="text-[#3a3a3c] font-semibold"> Только чтение</span>`;
+  } else {
+  const text = noteTextarea.value;
+  const chars = text.length;
+  const words = text.trim() === '' ? 0 : text.trim().split(/\s+/).length;
+  wordCharStats.textContent = `${words} слов, ${chars} симв.`;
+  }
+ }
+
+ // Open/Close Settings Modal with Apple Sheet Physics
+ function openSettings() {
+  sheetBackdrop.classList.remove('hidden');
+  requestAnimationFrame(() => {
+  sheetBackdrop.classList.remove('opacity-0');
+  sheetBackdrop.classList.add('opacity-100');
+  settingsSheet.classList.remove('hidden-sheet');
+  settingsSheet.classList.add('visible-sheet');
+  });
+ }
+
+ function closeSettings() {
+  settingsSheet.classList.remove('visible-sheet');
+  settingsSheet.classList.add('hidden-sheet');
+  sheetBackdrop.classList.remove('opacity-100');
+  sheetBackdrop.classList.add('opacity-0');
+  setTimeout(() => {
+  sheetBackdrop.classList.add('hidden');
+  }, 350);
+ }
+
+ // Drag-down gesture on sheet to dismiss
+ let startY = 0;
+ let currentY = 0;
+ let isDragging = false;
+
+ function handleTouchStart(e) {
+  startY = e.touches ? e.touches[0].clientY : e.clientY;
+  isDragging = true;
+  settingsSheet.style.transition = 'none';
+ }
+
+ function handleTouchMove(e) {
+  if (!isDragging) return;
+  const clientY = e.touches ? e.touches[0].clientY : e.clientY;
+  currentY = clientY - startY;
+  if (currentY > 0) {
+  settingsSheet.style.transform = `translateY(${currentY}px)`;
+  }
+ }
+
+ function handleTouchEnd() {
+  if (!isDragging) return;
+  isDragging = false;
+  settingsSheet.style.transition = '';
+  if (currentY > 70) {
+  closeSettings();
+  } else {
+  settingsSheet.style.transform = 'translateY(0)';
+  }
+  currentY = 0;
+ }
+
+ sheetGrabber.addEventListener('mousedown', handleTouchStart);
+ sheetGrabber.addEventListener('touchstart', handleTouchStart, { passive: true });
+ window.addEventListener('mousemove', handleTouchMove);
+ window.addEventListener('touchmove', handleTouchMove, { passive: true });
+ window.addEventListener('mouseup', handleTouchEnd);
+ window.addEventListener('touchend', handleTouchEnd);
+
+ sheetBackdrop.addEventListener('click', closeSettings);
+ sheetHeader.addEventListener('click', closeSettings);
+
+ // Event Listeners
+ searchInput.addEventListener('input', renderNotes);
+ noteTextarea.addEventListener('input', updateStats);
+
+ newNoteBtn.addEventListener('click', () => {
+  const newId = String(Date.now());
+  const newNote = {
+  id: newId,
+  text: '',
+  isPinned: false,
+  date: 'Только что'
+  };
+  notes.unshift(newNote);
+  openNote(newId);
+  setTimeout(() => noteTextarea.focus(), 250);
+ });
+
+ backToListBtn.addEventListener('click', () => {
+  if (currentNoteId) {
+  const note = notes.find(n => n.id === currentNoteId);
+  if (note && note.text.trim() === '') {
+   notes = notes.filter(n => n.id !== currentNoteId);
+  }
+  }
+  // Apple pop transition: detail slides away, list returns
+  detailView.classList.remove('detail-active');
+  detailView.classList.add('detail-hidden-right');
+  listView.classList.remove('list-hidden-back');
+
+  closeSettings();
+  setTimeout(renderNotes, 200);
+ });
+
+ doneEditingBtn.addEventListener('click', () => {
+  noteTextarea.blur();
+ });
+
+ deleteDetailBtn.addEventListener('click', () => {
+  if (confirm('Удалить эту заметку? Это действие нельзя отменить.')) {
+  notes = notes.filter(n => n.id !== currentNoteId);
+  detailView.classList.remove('detail-active');
+  detailView.classList.add('detail-hidden-right');
+  listView.classList.remove('list-hidden-back');
+  closeSettings();
+  setTimeout(renderNotes, 200);
+  }
+ });
+
+ openSettingsBtn.addEventListener('click', openSettings);
+
+ fontSizeSlider.addEventListener('input', (e) => {
+  settings.fontSize = Number(e.target.value);
+  applyEditorSettings();
+ });
+
+ fontStyleSelect.addEventListener('change', (e) => {
+  settings.fontStyle = e.target.value;
+  applyEditorSettings();
+ });
+
+ readOnlyToggle.addEventListener('change', (e) => {
+  settings.readOnly = e.target.checked;
+  applyEditorSettings();
+ });
+
+ copyAllTextBtn.addEventListener('click', () => {
+  navigator.clipboard.writeText(noteTextarea.value).then(() => {
+  copyToast.classList.remove('hidden');
+  setTimeout(() => copyToast.classList.add('hidden'), 1500);
+  });
+ });
+
+ cleanWhitespaceBtn.addEventListener('click', () => {
+  fixErrorsNotice.classList.remove('hidden');
+  setTimeout(() => fixErrorsNotice.classList.add('hidden'), 1500);
+ });
+
+ // Theme Toggle (Light / Dark)
+ function applyTheme() {
+  const listTitleText = document.getElementById('listTitleText');
+  const listBottomBar = document.getElementById('listBottomBar');
+  const detailNavBar = document.getElementById('detailNavBar');
+  const editorFooter = document.getElementById('editorFooter');
+  const sheetHeaderTitle = sheetHeader ? sheetHeader.querySelector('h2') : null;
+
+  if (isDarkMode) {
+  document.documentElement.style.setProperty('--card-bg', '#2c2c2e');
+  document.documentElement.style.setProperty('--border-color', 'rgba(255,255,255,0.08)');
+  document.documentElement.style.setProperty('--divider-color', 'rgba(255,255,255,0.06)');
+  document.documentElement.style.setProperty('--text-primary', '#ffffff');
+  document.documentElement.style.setProperty('--text-secondary', '#a1a1aa');
+
+  document.body.className = "bg-neutral-900 text-neutral-100 flex flex-col items-center justify-center min-h-screen p-4 sm:p-6 transition-colors duration-300";
+  screen.className = "relative w-full h-full bg-[#1c1c1e] text-white rounded-[42px] overflow-hidden flex flex-col transition-colors duration-300";
+  if (listTitleText) listTitleText.className = "text-[32px] font-bold tracking-tight text-white";
+  if (searchInput) searchInput.className = "w-full bg-[#2c2c2e] text-sm text-white placeholder-neutral-400 rounded-xl pl-9 pr-3 py-2 outline-none focus:ring-1 focus:ring-neutral-700 transition duration-200";
+  if (listBottomBar) listBottomBar.className = "h-16 border-t border-neutral-800/80 px-6 flex items-center justify-center bg-[#1c1c1e]/90 backdrop-blur";
+  
+  detailView.className = "screen-view detail-hidden-right absolute inset-0 z-20 bg-[#1c1c1e] text-white flex flex-col h-full";
+  detailView.style.backgroundColor = '#1c1c1e';
+  if (detailNavBar) detailNavBar.className = "pt-10 px-4 pb-2 border-b border-neutral-800/80 flex items-center justify-between bg-[#1c1c1e]/95 backdrop-blur text-white";
+  if (noteTextarea) noteTextarea.className = "w-full flex-1 bg-transparent text-white placeholder-neutral-500 outline-none resize-none leading-relaxed tracking-normal font-sans transition-all duration-200";
+  if (editorFooter) editorFooter.className = "h-10 px-5 border-t border-neutral-800/80 bg-[#242426] flex items-center justify-between text-[11px] text-neutral-400 font-medium";
+
+  settingsSheet.style.backgroundColor = '#2c2c2e';
+  settingsSheet.style.color = '#ffffff';
+  if (sheetHeaderTitle) sheetHeaderTitle.className = "text-base font-bold text-white";
+  if (fontStyleSelect) fontStyleSelect.className = "bg-[#2c2c2e] text-white text-xs font-medium px-2.5 py-1.5 rounded-lg outline-none border border-neutral-600 focus:border-neutral-700 transition";
+
+  document.querySelectorAll('#settingsSheet .bg-\\[\\#1c1c1e\\], #settingsSheet .bg-white').forEach(el => {
+   if (el.classList.contains('divide-y') || el.classList.contains('divide-neutral-200') || el.classList.contains('divide-neutral-800')) {
+   el.className = "bg-[#1c1c1e] rounded-2xl divide-y divide-neutral-800 border border-neutral-700/40";
+   } else if (el.classList.contains('text-xs') || el.id === 'statChars') {
+   el.className = "bg-[#1c1c1e] rounded-2xl p-3.5 space-y-2 border border-neutral-700/40 text-xs";
+   } else {
+   el.className = "bg-[#1c1c1e] rounded-2xl p-3.5 space-y-3.5 border border-neutral-700/40";
+   }
+  });
+
+  } else {
+  document.documentElement.style.setProperty('--card-bg', '#ffffff');
+  document.documentElement.style.setProperty('--border-color', 'rgba(0,0,0,0.08)');
+  document.documentElement.style.setProperty('--divider-color', 'rgba(0,0,0,0.06)');
+  document.documentElement.style.setProperty('--text-primary', '#000000');
+  document.documentElement.style.setProperty('--text-secondary', '#000000');
+
+  document.body.className = "bg-[#e5e5ea] text-black flex flex-col items-center justify-center min-h-screen p-4 sm:p-6 transition-colors duration-300";
+  screen.className = "relative w-full h-full bg-[#f2f2f7] text-black rounded-[42px] overflow-hidden flex flex-col transition-colors duration-300";
+  if (listTitleText) listTitleText.className = "text-[32px] font-bold tracking-tight text-black";
+  if (searchInput) searchInput.className = "w-full bg-[#e3e3e8] text-sm text-black placeholder-neutral-500 rounded-xl pl-9 pr-3 py-2 outline-none focus:ring-1 focus:ring-neutral-700 transition duration-200";
+  if (listBottomBar) listBottomBar.className = "h-16 border-t border-neutral-200/80 px-6 flex items-center justify-center bg-[#f2f2f7]/90 backdrop-blur";
+  
+  detailView.className = "screen-view detail-hidden-right absolute inset-0 z-20 bg-white text-black flex flex-col h-full";
+  detailView.style.backgroundColor = '#ffffff';
+  if (detailNavBar) detailNavBar.className = "pt-10 px-4 pb-2 border-b border-neutral-200/80 flex items-center justify-between bg-white/95 backdrop-blur text-black";
+  if (noteTextarea) noteTextarea.className = "w-full flex-1 bg-transparent text-black placeholder-neutral-400 outline-none resize-none leading-relaxed tracking-normal font-sans transition-all duration-200";
+  if (editorFooter) editorFooter.className = "h-10 px-5 border-t border-neutral-200/80 bg-[#f9f9fb] flex items-center justify-between text-[11px] text-black font-semibold";
+
+  settingsSheet.style.backgroundColor = '#f2f2f7';
+  settingsSheet.style.color = '#111827';
+  if (sheetHeaderTitle) sheetHeaderTitle.className = "text-base font-bold text-neutral-900";
+  if (fontStyleSelect) fontStyleSelect.className = "bg-white text-neutral-900 text-xs font-medium px-2.5 py-1.5 rounded-lg outline-none border border-neutral-300 focus:border-neutral-700 transition";
+
+  document.querySelectorAll('#settingsSheet .bg-\\[\\#1c1c1e\\], #settingsSheet .bg-white').forEach(el => {
+   if (el.classList.contains('divide-y') || el.classList.contains('divide-neutral-200') || el.classList.contains('divide-neutral-800')) {
+   el.className = "bg-white rounded-2xl divide-y divide-neutral-200 border border-neutral-200/80 shadow-sm";
+   } else if (el.classList.contains('text-xs') || el.id === 'statChars') {
+   el.className = "bg-white rounded-2xl p-3.5 space-y-2 border border-neutral-200/80 text-xs text-neutral-800 shadow-sm";
+   } else {
+   el.className = "bg-white rounded-2xl p-3.5 space-y-3.5 border border-neutral-200/80 text-neutral-800 shadow-sm";
+   }
+  });
+
     }
-
-    function escapeHtml(text) {
-      const map = { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#039;' };
-      return text.replace(/[&<>"']/g, m => map[m]);
-    }
-
-    // Open Note: Apple Push Transition
-    window.openNote = function(id) {
-      currentNoteId = id;
-      const note = notes.find(n => n.id === id);
-      if (!note) return;
-
-      noteTextarea.value = note.text;
-      updateStats();
-      applyEditorSettings();
-
-      // Apple push animation: list slides back, detail slides in
-      listView.classList.add('list-hidden-back');
-      detailView.classList.remove('detail-hidden-right');
-      detailView.classList.add('detail-active');
-
-      closeSettings();
-    };
-
-    function updateStats() {
-      const text = noteTextarea.value;
-      const chars = text.length;
-      const words = text.trim() === '' ? 0 : text.trim().split(/\s+/).length;
-
-      wordCharStats.textContent = `${words} слов, ${chars} симв.`;
-      statChars.textContent = chars;
-      statWords.textContent = words;
-      statReadingTime.textContent = `~${Math.max(1, Math.round(words / 180))} мин`;
-
-      if (currentNoteId) {
-        const note = notes.find(n => n.id === currentNoteId);
-        if (note) note.text = text;
-      }
-    }
-
-    function applyEditorSettings() {
-      noteTextarea.style.fontSize = `${settings.fontSize}px`;
-      fontSizeDisplay.textContent = `${settings.fontSize} пт`;
-      fontSizeSlider.value = settings.fontSize;
-
-      noteTextarea.classList.remove('font-sans', 'font-serif-ios', 'font-mono-ios');
-      if (settings.fontStyle === 'serif') noteTextarea.classList.add('font-serif-ios');
-      else if (settings.fontStyle === 'mono') noteTextarea.classList.add('font-mono-ios');
-      else noteTextarea.classList.add('font-sans');
-      fontStyleSelect.value = settings.fontStyle;
-
-      noteTextarea.readOnly = settings.readOnly;
-      readOnlyToggle.checked = settings.readOnly;
-      if (settings.readOnly) {
-        wordCharStats.innerHTML = `<span class="text-[#3a3a3c] font-semibold">🔒 Только чтение</span>`;
-      } else {
-        const text = noteTextarea.value;
-        const chars = text.length;
-        const words = text.trim() === '' ? 0 : text.trim().split(/\s+/).length;
-        wordCharStats.textContent = `${words} слов, ${chars} симв.`;
-      }
-    }
-
-    // Open/Close Settings Modal with Apple Sheet Physics
-    function openSettings() {
-      sheetBackdrop.classList.remove('hidden');
-      requestAnimationFrame(() => {
-        sheetBackdrop.classList.remove('opacity-0');
-        sheetBackdrop.classList.add('opacity-100');
-        settingsSheet.classList.remove('hidden-sheet');
-        settingsSheet.classList.add('visible-sheet');
-      });
-    }
-
-    function closeSettings() {
-      settingsSheet.classList.remove('visible-sheet');
-      settingsSheet.classList.add('hidden-sheet');
-      sheetBackdrop.classList.remove('opacity-100');
-      sheetBackdrop.classList.add('opacity-0');
-      setTimeout(() => {
-        sheetBackdrop.classList.add('hidden');
-      }, 350);
-    }
-
-    // Drag-down gesture on sheet to dismiss
-    let startY = 0;
-    let currentY = 0;
-    let isDragging = false;
-
-    function handleTouchStart(e) {
-      startY = e.touches ? e.touches[0].clientY : e.clientY;
-      isDragging = true;
-      settingsSheet.style.transition = 'none';
-    }
-
-    function handleTouchMove(e) {
-      if (!isDragging) return;
-      const clientY = e.touches ? e.touches[0].clientY : e.clientY;
-      currentY = clientY - startY;
-      if (currentY > 0) {
-        settingsSheet.style.transform = `translateY(${currentY}px)`;
-      }
-    }
-
-    function handleTouchEnd() {
-      if (!isDragging) return;
-      isDragging = false;
-      settingsSheet.style.transition = '';
-      if (currentY > 70) {
-        closeSettings();
-      } else {
-        settingsSheet.style.transform = 'translateY(0)';
-      }
-      currentY = 0;
-    }
-
-    sheetGrabber.addEventListener('mousedown', handleTouchStart);
-    sheetGrabber.addEventListener('touchstart', handleTouchStart, { passive: true });
-    window.addEventListener('mousemove', handleTouchMove);
-    window.addEventListener('touchmove', handleTouchMove, { passive: true });
-    window.addEventListener('mouseup', handleTouchEnd);
-    window.addEventListener('touchend', handleTouchEnd);
-
-    sheetBackdrop.addEventListener('click', closeSettings);
-    sheetHeader.addEventListener('click', closeSettings);
-
-    // Event Listeners
-    searchInput.addEventListener('input', renderNotes);
-    noteTextarea.addEventListener('input', updateStats);
-
-    newNoteBtn.addEventListener('click', () => {
-      const newId = String(Date.now());
-      const newNote = {
-        id: newId,
-        text: '',
-        isPinned: false,
-        date: 'Только что'
-      };
-      notes.unshift(newNote);
-      openNote(newId);
-      setTimeout(() => noteTextarea.focus(), 250);
-    });
-
-    backToListBtn.addEventListener('click', () => {
-      if (currentNoteId) {
-        const note = notes.find(n => n.id === currentNoteId);
-        if (note && note.text.trim() === '') {
-          notes = notes.filter(n => n.id !== currentNoteId);
-        }
-      }
-      // Apple pop transition: detail slides away, list returns
-      detailView.classList.remove('detail-active');
-      detailView.classList.add('detail-hidden-right');
-      listView.classList.remove('list-hidden-back');
-
-      closeSettings();
-      setTimeout(renderNotes, 200);
-    });
-
-    doneEditingBtn.addEventListener('click', () => {
-      noteTextarea.blur();
-    });
-
-    deleteDetailBtn.addEventListener('click', () => {
-      if (confirm('Удалить эту заметку? Это действие нельзя отменить.')) {
-        notes = notes.filter(n => n.id !== currentNoteId);
-        detailView.classList.remove('detail-active');
-        detailView.classList.add('detail-hidden-right');
-        listView.classList.remove('list-hidden-back');
-        closeSettings();
-        setTimeout(renderNotes, 200);
-      }
-    });
-
-    openSettingsBtn.addEventListener('click', openSettings);
-
-    fontSizeSlider.addEventListener('input', (e) => {
-      settings.fontSize = Number(e.target.value);
-      applyEditorSettings();
-    });
-
-    fontStyleSelect.addEventListener('change', (e) => {
-      settings.fontStyle = e.target.value;
-      applyEditorSettings();
-    });
-
-    readOnlyToggle.addEventListener('change', (e) => {
-      settings.readOnly = e.target.checked;
-      applyEditorSettings();
-    });
-
-    copyAllTextBtn.addEventListener('click', () => {
-      navigator.clipboard.writeText(noteTextarea.value).then(() => {
-        copyToast.classList.remove('hidden');
-        setTimeout(() => copyToast.classList.add('hidden'), 1500);
-      });
-    });
-
-    cleanWhitespaceBtn.addEventListener('click', () => {
-      fixErrorsNotice.classList.remove('hidden');
-      setTimeout(() => fixErrorsNotice.classList.add('hidden'), 1500);
-    });
-
-    // Theme Toggle (Light / Dark)
-    function applyTheme() {
-      const listTitleText = document.getElementById('listTitleText');
-      const listBottomBar = document.getElementById('listBottomBar');
-      const detailNavBar = document.getElementById('detailNavBar');
-      const editorFooter = document.getElementById('editorFooter');
-      const sheetHeaderTitle = sheetHeader ? sheetHeader.querySelector('h2') : null;
-
-      if (isDarkMode) {
-        document.documentElement.style.setProperty('--card-bg', '#2c2c2e');
-        document.documentElement.style.setProperty('--border-color', 'rgba(255,255,255,0.08)');
-        document.documentElement.style.setProperty('--divider-color', 'rgba(255,255,255,0.06)');
-        document.documentElement.style.setProperty('--text-primary', '#ffffff');
-        document.documentElement.style.setProperty('--text-secondary', '#a1a1aa');
-
-        document.body.className = "bg-neutral-900 text-neutral-100 flex flex-col items-center justify-center min-h-screen p-4 sm:p-6 transition-colors duration-300";
-        screen.className = "relative w-full h-full bg-[#1c1c1e] text-white rounded-[42px] overflow-hidden flex flex-col transition-colors duration-300";
-        if (listTitleText) listTitleText.className = "text-[32px] font-bold tracking-tight text-white";
-        if (searchInput) searchInput.className = "w-full bg-[#2c2c2e] text-sm text-white placeholder-neutral-400 rounded-xl pl-9 pr-3 py-2 outline-none focus:ring-1 focus:ring-neutral-700 transition duration-200";
-        if (listBottomBar) listBottomBar.className = "h-16 border-t border-neutral-800/80 px-6 flex items-center justify-center bg-[#1c1c1e]/90 backdrop-blur";
-        
-        detailView.className = "screen-view detail-hidden-right absolute inset-0 z-20 bg-[#1c1c1e] text-white flex flex-col h-full";
-        detailView.style.backgroundColor = '#1c1c1e';
-        if (detailNavBar) detailNavBar.className = "pt-10 px-4 pb-2 border-b border-neutral-800/80 flex items-center justify-between bg-[#1c1c1e]/95 backdrop-blur text-white";
-        if (noteTextarea) noteTextarea.className = "w-full flex-1 bg-transparent text-white placeholder-neutral-500 outline-none resize-none leading-relaxed tracking-normal font-sans transition-all duration-200";
-        if (editorFooter) editorFooter.className = "h-10 px-5 border-t border-neutral-800/80 bg-[#242426] flex items-center justify-between text-[11px] text-neutral-400 font-medium";
-
-        settingsSheet.style.backgroundColor = '#2c2c2e';
-        settingsSheet.style.color = '#ffffff';
-        if (sheetHeaderTitle) sheetHeaderTitle.className = "text-base font-bold text-white";
-        if (fontStyleSelect) fontStyleSelect.className = "bg-[#2c2c2e] text-white text-xs font-medium px-2.5 py-1.5 rounded-lg outline-none border border-neutral-600 focus:border-neutral-700 transition";
-
-        document.querySelectorAll('#settingsSheet .bg-\\[\\#1c1c1e\\], #settingsSheet .bg-white').forEach(el => {
-          if (el.classList.contains('divide-y') || el.classList.contains('divide-neutral-200') || el.classList.contains('divide-neutral-800')) {
-            el.className = "bg-[#1c1c1e] rounded-2xl divide-y divide-neutral-800 border border-neutral-700/40";
-          } else if (el.classList.contains('text-xs') || el.id === 'statChars') {
-            el.className = "bg-[#1c1c1e] rounded-2xl p-3.5 space-y-2 border border-neutral-700/40 text-xs";
-          } else {
-            el.className = "bg-[#1c1c1e] rounded-2xl p-3.5 space-y-3.5 border border-neutral-700/40";
-          }
-        });
-
-        themeIcon.textContent = '🌙';
-        themeLabel.textContent = 'Тёмная тема';
-      } else {
-        document.documentElement.style.setProperty('--card-bg', '#ffffff');
-        document.documentElement.style.setProperty('--border-color', 'rgba(0,0,0,0.08)');
-        document.documentElement.style.setProperty('--divider-color', 'rgba(0,0,0,0.06)');
-        document.documentElement.style.setProperty('--text-primary', '#000000');
-        document.documentElement.style.setProperty('--text-secondary', '#000000');
-
-        document.body.className = "bg-[#e5e5ea] text-black flex flex-col items-center justify-center min-h-screen p-4 sm:p-6 transition-colors duration-300";
-        screen.className = "relative w-full h-full bg-[#f2f2f7] text-black rounded-[42px] overflow-hidden flex flex-col transition-colors duration-300";
-        if (listTitleText) listTitleText.className = "text-[32px] font-bold tracking-tight text-black";
-        if (searchInput) searchInput.className = "w-full bg-[#e3e3e8] text-sm text-black placeholder-neutral-500 rounded-xl pl-9 pr-3 py-2 outline-none focus:ring-1 focus:ring-neutral-700 transition duration-200";
-        if (listBottomBar) listBottomBar.className = "h-16 border-t border-neutral-200/80 px-6 flex items-center justify-center bg-[#f2f2f7]/90 backdrop-blur";
-        
-        detailView.className = "screen-view detail-hidden-right absolute inset-0 z-20 bg-white text-black flex flex-col h-full";
-        detailView.style.backgroundColor = '#ffffff';
-        if (detailNavBar) detailNavBar.className = "pt-10 px-4 pb-2 border-b border-neutral-200/80 flex items-center justify-between bg-white/95 backdrop-blur text-black";
-        if (noteTextarea) noteTextarea.className = "w-full flex-1 bg-transparent text-black placeholder-neutral-400 outline-none resize-none leading-relaxed tracking-normal font-sans transition-all duration-200";
-        if (editorFooter) editorFooter.className = "h-10 px-5 border-t border-neutral-200/80 bg-[#f9f9fb] flex items-center justify-between text-[11px] text-black font-semibold";
-
-        settingsSheet.style.backgroundColor = '#f2f2f7';
-        settingsSheet.style.color = '#111827';
-        if (sheetHeaderTitle) sheetHeaderTitle.className = "text-base font-bold text-neutral-900";
-        if (fontStyleSelect) fontStyleSelect.className = "bg-white text-neutral-900 text-xs font-medium px-2.5 py-1.5 rounded-lg outline-none border border-neutral-300 focus:border-neutral-700 transition";
-
-        document.querySelectorAll('#settingsSheet .bg-\\[\\#1c1c1e\\], #settingsSheet .bg-white').forEach(el => {
-          if (el.classList.contains('divide-y') || el.classList.contains('divide-neutral-200') || el.classList.contains('divide-neutral-800')) {
-            el.className = "bg-white rounded-2xl divide-y divide-neutral-200 border border-neutral-200/80 shadow-sm";
-          } else if (el.classList.contains('text-xs') || el.id === 'statChars') {
-            el.className = "bg-white rounded-2xl p-3.5 space-y-2 border border-neutral-200/80 text-xs text-neutral-800 shadow-sm";
-          } else {
-            el.className = "bg-white rounded-2xl p-3.5 space-y-3.5 border border-neutral-200/80 text-neutral-800 shadow-sm";
-          }
-        });
-
-        themeIcon.textContent = '☀️';
-        themeLabel.textContent = 'Светлая тема';
-      }
-      renderNotes();
-    }
-
-    toggleThemeBtn.addEventListener('click', () => {
-      isDarkMode = !isDarkMode;
-      applyTheme();
-    });
-
-    resetDemoBtn.addEventListener('click', () => {
-      location.reload();
-    });
-
-    // Init
-    applyTheme();
     renderNotes();
-  </script>
+  }
+
+  // Init
+  applyTheme();
+  renderNotes();
+ </script>
 </body>
 </html>
