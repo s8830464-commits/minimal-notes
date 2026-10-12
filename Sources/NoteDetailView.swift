@@ -132,7 +132,12 @@ struct NoteDetailView: View {
                 fontDesign: $fontDesign,
                 isReadOnly: $isReadOnly,
                 note: currentNote,
-                onFixErrors: fixErrors,
+                onApplyCorrection: { correctedText in
+                    if let note = currentNote {
+                        viewModel.updateNote(id: note.id, text: correctedText)
+                        viewModel.flush()
+                    }
+                },
                 onCopyAll: copyAllText
             )
         }
@@ -170,9 +175,5 @@ struct NoteDetailView: View {
         if let note = currentNote {
             UIPasteboard.general.string = note.text
         }
-    }
-
-    private func fixErrors() {
-        // Заготовка для исправления ошибок в тексте, которую мы настроим позже
     }
 }

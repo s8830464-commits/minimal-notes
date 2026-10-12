@@ -284,24 +284,56 @@
    </div>
    </div>
 
+   <!-- Section: AI (OpenRouter) -->
+   <div>
+   <div class="text-[11px] uppercase tracking-wider text-black font-semibold px-2 mb-1.5">Нейросеть (OpenRouter)</div>
+   <div class="bg-white rounded-2xl p-3.5 space-y-3 border border-neutral-200/80 shadow-sm text-neutral-800">
+    <div>
+     <div class="text-[11px] text-black font-medium mb-1">API-ключ OpenRouter</div>
+     <div class="relative flex items-center">
+      <input id="openRouterKeyInput" type="password" placeholder="sk-or-v1-..." class="w-full bg-[#f2f2f7] text-black text-xs font-mono px-3 py-2 pr-9 rounded-lg outline-none border border-neutral-300 focus:border-[#3a3a3c] transition">
+      <button id="toggleKeyVisibilityBtn" class="absolute right-2 text-[#3a3a3c] hover:text-black p-1" title="Показать/скрыть ключ">
+       <svg id="eyeIcon" class="w-4 h-4 stroke-current fill-none stroke-[2]" viewBox="0 0 24 24">
+        <path stroke-linecap="round" stroke-linejoin="round" d="M2.036 12.322a1.012 1.012 0 010-.639C3.423 7.51 7.36 4.5 12 4.5c4.638 0 8.573 3.007 9.963 7.178.07.207.07.431 0 .639C20.577 16.49 16.64 19.5 12 19.5c-4.638 0-8.573-3.007-9.963-7.178z"/>
+        <path stroke-linecap="round" stroke-linejoin="round" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/>
+       </svg>
+      </button>
+     </div>
+    </div>
+
+    <div class="flex items-center justify-between">
+     <span class="text-xs text-black font-medium">Модель</span>
+     <select id="openRouterModelSelect" class="bg-[#f2f2f7] text-black text-xs font-medium px-2.5 py-1.5 rounded-lg outline-none border border-neutral-300 focus:border-[#3a3a3c] transition">
+      <option value="qwen/qwen-2.5-72b-instruct:free">Qwen 2.5 72B (Бесплатно)</option>
+      <option value="meta-llama/llama-3.3-70b-instruct:free">Llama 3.3 70B (Бесплатно)</option>
+      <option value="google/gemini-2.0-flash-exp:free">Gemini 2.0 Flash (Бесплатно)</option>
+     </select>
+    </div>
+
+    <div class="text-[10px] text-black pt-1 border-t border-neutral-100">
+     Модель Qwen 2.5 72B с отличной поддержкой русского языка. Ключ хранится только в вашем браузере.
+    </div>
+   </div>
+   </div>
+
    <!-- Section: Actions -->
    <div>
-   <div class="text-[11px] uppercase tracking-wider text-neutral-400 font-semibold px-2 mb-1.5">Действия</div>
-   <div class="bg-[#1c1c1e] rounded-2xl divide-y divide-neutral-800 border border-neutral-700/40">
-    <button id="copyAllTextBtn" class="apple-row w-full px-3.5 py-3 flex items-center justify-between text-neutral-200 rounded-t-2xl text-left">
-    <span class="flex items-center gap-2">
+   <div class="text-[11px] uppercase tracking-wider text-black font-semibold px-2 mb-1.5">Действия</div>
+   <div class="bg-white rounded-2xl divide-y divide-neutral-200 border border-neutral-200/80 shadow-sm">
+    <button id="cleanWhitespaceBtn" class="apple-row w-full px-3.5 py-3 flex items-center justify-between text-black rounded-t-2xl text-left">
+    <span class="flex items-center gap-2 font-medium text-xs">
+     <svg class="w-4 h-4 text-[#3a3a3c]" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9.813 15.904L9 18.75l-.813-2.846a4.5 4.5 0 00-3.09-3.09L2.25 12l2.846-.813a4.5 4.5 0 003.09-3.09L9 5.25l.813 2.846a4.5 4.5 0 003.09 3.09L15.75 12l-2.846.813a4.5 4.5 0 00-3.09 3.09zM18.259 8.715L18 9.75l-.259-1.035a3.375 3.375 0 00-2.455-2.456L14.25 6l1.036-.259a3.375 3.375 0 002.455-2.456L18 2.25l.259 1.035a3.375 3.375 0 002.456 2.456L21.75 6l-1.035.259a3.375 3.375 0 00-2.456 2.456z"/></svg>
+     Исправить ошибки в тексте
+    </span>
+    <span id="fixErrorsNotice" class="text-xs text-neutral-600 font-medium hidden">Исправление...</span>
+    </button>
+
+    <button id="copyAllTextBtn" class="apple-row w-full px-3.5 py-3 flex items-center justify-between text-black rounded-b-2xl text-left">
+    <span class="flex items-center gap-2 font-medium text-xs">
      <svg class="w-4 h-4 text-[#3a3a3c]" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7v8a2 2 0 002 2h6M8 7V5a2 2 0 012-2h4.586a1 1 0 01.707.293l4.414 4.414a1 1 0 01.293.707V15a2 2 0 01-2 2h-2M8 7H6a2 2 0 00-2 2v10a2 2 0 002 2h8a2 2 0 002-2v-2"/></svg>
      Скопировать весь текст
     </span>
-    <span id="copyToast" class="text-xs text-green-400 font-medium hidden">Скопировано!</span>
-    </button>
-
-    <button id="cleanWhitespaceBtn" class="apple-row w-full px-3.5 py-3 flex items-center justify-between text-neutral-200 rounded-b-2xl text-left">
-    <span class="flex items-center gap-2">
-     <svg class="w-4 h-4 text-[#3a3a3c]" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
-     Исправить ошибки в тексте
-    </span>
-    <span id="fixErrorsNotice" class="text-xs text-neutral-700 font-medium hidden">Скоро настроим</span>
+    <span id="copyToast" class="text-xs text-green-600 font-medium hidden">Скопировано</span>
     </button>
    </div>
    </div>
@@ -392,9 +424,10 @@
  const statChars = document.getElementById('statChars');
  const statWords = document.getElementById('statWords');
  const statReadingTime = document.getElementById('statReadingTime');
- 
- 
- 
+ const openRouterKeyInput = document.getElementById('openRouterKeyInput');
+ const openRouterModelSelect = document.getElementById('openRouterModelSelect');
+ const toggleKeyVisibilityBtn = document.getElementById('toggleKeyVisibilityBtn');
+ const eyeIcon = document.getElementById('eyeIcon');
  const newNoteBtn = document.getElementById('newNoteBtn');
  const backToListBtn = document.getElementById('backToListBtn');
  const deleteDetailBtn = document.getElementById('deleteDetailBtn');
@@ -659,9 +692,114 @@
   });
  });
 
- cleanWhitespaceBtn.addEventListener('click', () => {
+ // OpenRouter Key & Model Local Storage Management
+ if (openRouterKeyInput) {
+  const savedKey = localStorage.getItem('notes_openrouter_key') || '';
+  openRouterKeyInput.value = savedKey;
+  openRouterKeyInput.addEventListener('input', (e) => {
+   localStorage.setItem('notes_openrouter_key', e.target.value.trim());
+  });
+ }
+
+ if (openRouterModelSelect) {
+  const savedModel = localStorage.getItem('notes_openrouter_model') || 'qwen/qwen-2.5-72b-instruct:free';
+  openRouterModelSelect.value = savedModel;
+  openRouterModelSelect.addEventListener('change', (e) => {
+   localStorage.setItem('notes_openrouter_model', e.target.value);
+  });
+ }
+
+ if (toggleKeyVisibilityBtn) {
+  toggleKeyVisibilityBtn.addEventListener('click', () => {
+   const isPassword = openRouterKeyInput.type === 'password';
+   openRouterKeyInput.type = isPassword ? 'text' : 'password';
+   eyeIcon.innerHTML = isPassword 
+    ? '<path stroke-linecap="round" stroke-linejoin="round" d="M3.98 8.223A10.477 10.477 0 001.934 12C3.226 16.338 7.244 19.5 12 19.5c.993 0 1.953-.138 2.863-.395M6.228 6.228A10.45 10.45 0 0112 4.5c4.756 0 8.773 3.162 10.065 7.498a10.523 10.523 0 01-4.293 5.774M6.228 6.228L3 3m3.228 3.228l3.65 3.65m7.894 7.894L21 21m-3.228-3.228l-3.65-3.65m0 0a3 3 0 10-4.243-4.243m4.242 4.242L9.88 9.88"/>'
+    : '<path stroke-linecap="round" stroke-linejoin="round" d="M2.036 12.322a1.012 1.012 0 010-.639C3.423 7.51 7.36 4.5 12 4.5c4.638 0 8.573 3.007 9.963 7.178.07.207.07.431 0 .639C20.577 16.49 16.64 19.5 12 19.5c-4.638 0-8.573-3.007-9.963-7.178z"/><path stroke-linecap="round" stroke-linejoin="round" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/>';
+  });
+ }
+
+ // AI Proofreading & Error Correction via OpenRouter
+ cleanWhitespaceBtn.addEventListener('click', async () => {
+  const rawText = noteTextarea.value.trim();
+  if (!rawText) {
+   alert('Заметка пустая. Напишите текст для проверки.');
+   return;
+  }
+
+  const apiKey = (openRouterKeyInput ? openRouterKeyInput.value.trim() : '') || (localStorage.getItem('notes_openrouter_key') || '').trim();
+  const model = (openRouterModelSelect ? openRouterModelSelect.value : '') || 'qwen/qwen-2.5-72b-instruct:free';
+
+  cleanWhitespaceBtn.disabled = true;
+  fixErrorsNotice.textContent = 'Обработка ИИ...';
+  fixErrorsNotice.className = 'text-xs text-neutral-600 font-medium';
   fixErrorsNotice.classList.remove('hidden');
-  setTimeout(() => fixErrorsNotice.classList.add('hidden'), 1500);
+
+  if (apiKey) {
+   try {
+    const resp = await fetch('https://openrouter.ai/api/v1/chat/completions', {
+     method: 'POST',
+     headers: {
+      'Content-Type': 'application/json',
+      'Authorization': 'Bearer ' + apiKey,
+      'HTTP-Referer': 'https://github.com/s8830464-commits/minimal-notes',
+      'X-Title': 'Minimal Notes'
+     },
+     body: JSON.stringify({
+      model: model,
+      messages: [
+       {
+        role: 'system',
+        content: 'Ты профессиональный корректор русского языка. Твоя единственная задача: исправить все орфографические, пунктуационные и грамматические ошибки в тексте. Сохраняй исходную структуру, разделение на абзацы и авторский стиль (включая разговорную лексику, сленг или нецензурные слова, если они есть) без цензуры и морализаторства. Верни ТОЛЬКО исправленный текст без вступительных слов, пояснений и кавычек.'
+       },
+       {
+        role: 'user',
+        content: noteTextarea.value
+       }
+      ],
+      temperature: 0.1
+     })
+    });
+
+    const data = await resp.json();
+    if (data.choices && data.choices[0] && data.choices[0].message) {
+     let content = data.choices[0].message.content.trim();
+     if (content.startsWith('```') && content.endsWith('```')) {
+      const lines = content.split('\n');
+      content = lines.slice(1, -1).join('\n').trim();
+     }
+     noteTextarea.value = content;
+     updateStats();
+     fixErrorsNotice.textContent = 'Исправлено';
+     fixErrorsNotice.className = 'text-xs text-green-600 font-medium';
+    } else if (data.error) {
+     alert('Ошибка OpenRouter: ' + (data.error.message || JSON.stringify(data.error)));
+     fixErrorsNotice.classList.add('hidden');
+    } else {
+     throw new Error('Некорректный ответ');
+    }
+   } catch (err) {
+    alert('Не удалось подключиться к OpenRouter: ' + err.message);
+    fixErrorsNotice.classList.add('hidden');
+   } finally {
+    cleanWhitespaceBtn.disabled = false;
+    setTimeout(() => fixErrorsNotice.classList.add('hidden'), 2500);
+   }
+  } else {
+   // Демо-режим если ключ пока не введён
+   setTimeout(() => {
+    let cleaned = noteTextarea.value
+     .replace(/\s+([.,!?:;])/g, '$1')
+     .replace(/([.,!?:;])(?=[^\s\d])/g, '$1 ')
+     .replace(/\n{3,}/g, '\n\n');
+    noteTextarea.value = cleaned;
+    updateStats();
+    fixErrorsNotice.textContent = 'Укажите ключ выше для Qwen';
+    fixErrorsNotice.className = 'text-xs text-[#3a3a3c] font-medium';
+    cleanWhitespaceBtn.disabled = false;
+    setTimeout(() => fixErrorsNotice.classList.add('hidden'), 3000);
+   }, 400);
+  }
  });
 
  // Theme Toggle (Light / Dark)
