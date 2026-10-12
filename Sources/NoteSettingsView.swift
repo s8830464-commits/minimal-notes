@@ -1,0 +1,157 @@
+import SwiftUI
+import UIKit
+
+struct NoteSettingsView: View {
+    @Environment(\.dismiss) private var dismiss
+
+    @Binding var fontSize: Double
+    @Binding var fontDesign: String
+    @Binding var isReadOnly: Bool
+
+    let note: Note?
+    let onFormatText: () -> Void
+    let onCopyAll: () -> Void
+
+    @State private var showCopiedNotice = false
+
+    var body: some View {
+        NavigationView {
+            Form {
+                // Раздел: Оформление текста
+                Section(header: Text("Оформление текста")) {
+                    Picker("Стиль шрифта", selection: $fontDesign) {
+                        Text("Стандартный").tag("default")
+                        Text("С засечками").tag("serif")
+                        Text("Моноширинный (код)").tag("monospaced")
+                    }
+                    .pickerStyle(.menu)
+
+                    VStack(alignment: .leading, spacing: 8) {
+                        HStack {
+                            Text("Размер шрифта")
+                            Spacer()
+                            Text("\(Int(fontSize)) пт")
+                                .foregroundColor(.secondary)
+                        }
+                        Slider(value: $fontSize, in: 14...28, step: 1)
+                            .tint(.orange)
+                    }
+
+                    Toggle(isOn: $isReadOnly) {
+                        VStack(alignment: .leading, spacing: 2) {
+                            Text("Режим чтения")
+                            Text("Защита от случайных правок")
+                                .font(.caption)
+                                .foregroundColor(.secondary)
+                        }
+                    }
+                    .tint(.orange)
+                }
+
+                // Раздел: Быстрые действия
+                Section(header: Text("Действия")) {
+                    Button {
+                        onCopyAll()
+                        showCopiedNotice = true
+                        DispatchQueue.main.asyncAfter(deadline: .now() + 1.5) {
+                            showCopiedNotice = false
+                        }
+                    } label: {
+                        HStack {
+                            Label("Скопировать весь текст", systemImage: "doc.on.doc")
+                            Spacer()
+                            if showCopiedNotice {
+                                Text("Скопировано")
+                                    .font(.caption)
+                                    .foregroundColor(.green)
+                            }
+                        }
+                    }
+
+                    Button {
+                        onFormatText()
+                    } label: {
+                        Label("Убрать лишние пробелы", systemImage: "wand.and.stars")
+                    }
+                }
+
+                // Раздел: Ссылки для настроек
+                Section(header: Text("Ссылки для настроек"), footer: Text("Ссылки открывают системные параметры iOS или веб-страницы.")) {
+                    if let settingsUrl = URL(string: UIApplication.openSettingsURLString) {
+                        Link(destination: settingsUrl) {
+                            HStack {
+                                Label("Настройки приложения в iOS", systemImage: "gearshape")
+                                Spacer()
+                                Image(systemName: "arrow.up.right")
+                                    .font(.caption2)
+                                    .foregroundColor(.secondary)
+                            }
+                        }
+                    }
+
+                    if let textHelpUrl = URL(string: "https://support.apple.com/guide/iphone/add-and-format-text-iph4f8f4a1bb/ios") {
+                        Link(destination: textHelpUrl) {
+                            HStack {
+                                Label("Справка Apple: Ввод и форматирование", systemImage: "keyboard")
+                                Spacer()
+                                Image(systemName: "arrow.up.right")
+                                    .font(.caption2)
+                                    .foregroundColor(.secondary)
+                            }
+                        }
+                    }
+
+                    if let repoUrl = URL(string: "https://github.com/s8830464-commits/minimal-notes") {
+                        Link(destination: repoUrl) {
+                            HStack {
+                                Label("Репозиторий на GitHub", systemImage: "link")
+                                Spacer()
+                                Image(systemName: "arrow.up.right")
+                                    .font(.caption2)
+                                    .foregroundColor(.secondary)
+                            }
+                        }
+                    }
+                }
+
+                // Раздел: Информация о заметке
+                if let note = note {
+                    Section(header: Text("Информация")) {
+                        HStack {
+                            Text("Символов")
+                            Spacer()
+                            Text("\(note.characterCount)").foregroundColor(.secondary)
+                        }
+                        HStack {
+                            Text("Слов")
+                            Spacer()
+                            Text("\(note.wordCount)").foregroundColor(.secondary)
+                        }
+                        HStack {
+                            Text("Примерное время чтения")
+                            Spacer()
+                            Text("~\(max(1, note.wordCount / 180)) мин").foregroundColor(.secondary)
+                        }
+                        HStack {
+                            Text("Последнее изменение")
+                            Spacer()
+                            Text(note.formattedDate).foregroundColor(.secondary)
+                        }
+                    }
+                }
+            }
+            .navigationTitle("Параметры заметки")
+            .navigationBarTitleDisplayMode(.inline)
+            .toolbar {
+                ToolbarItem(placement: .confirmationAction) {
+                    Button("Закрыть") {
+                        dismiss()
+                    }
+                    .font(.body.weight(.semibold))
+                    .foregroundColor(.orange)
+                }
+            }
+        }
+        .navigationViewStyle(.stack)
+    }
+}

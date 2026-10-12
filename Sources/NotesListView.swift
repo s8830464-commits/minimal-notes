@@ -76,10 +76,6 @@ struct NotesListView: View {
         .toolbar {
             ToolbarItemGroup(placement: .bottomBar) {
                 Spacer()
-                Text("\(viewModel.notes.count) \(notesCountString(viewModel.notes.count))")
-                    .font(.footnote)
-                    .foregroundColor(.secondary)
-                Spacer()
                 Button {
                     guard let note = viewModel.createNote() else { return }
                     if #available(iOS 16.0, *) {
@@ -130,15 +126,6 @@ struct NotesListView: View {
             } label: {
                 NoteRowView(note: note)
             }
-        }
-    }
-
-    private func notesCountString(_ count: Int) -> String {
-        if (11...19).contains(count % 100) { return "заметок" }
-        switch count % 10 {
-        case 1: return "заметка"
-        case 2, 3, 4: return "заметки"
-        default: return "заметок"
         }
     }
 }

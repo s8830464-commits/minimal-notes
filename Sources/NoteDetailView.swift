@@ -18,10 +18,28 @@ struct NoteDetailView: View {
 
     @State private var didRequestFocus = false
     @State private var showingShareSheet = false
+    @State private var showingSettingsSheet = false
     @State private var showingDeleteAlert = false
     @FocusState private var isFocused: Bool
 
+    // Расширенные настройки (сохраняются автоматически)
+    @AppStorage("note_font_size") private var fontSize: Double = 17
+    @AppStorage("note_font_design") private var fontDesign: String = "default"
+    @State private var isReadOnly = false
+
     private var currentNote: Note? { viewModel.note(id: noteId) }
+
+    // Вычисляемый динамический шрифт
+    private var editorFont: Font {
+        let design: Font.Design = {
+            switch fontDesign {
+            case "serif": return .serif
+            case "monospaced": return .monospaced
+            default: return .default
+            }
+        }()
+        return .system(size: CGFloat(fontSize), design: design)
+    }
 
     // One source of truth: presenting a sheet cannot reload a stale local draft.
     private var text: Binding<String> {
@@ -35,15 +53,20 @@ struct NoteDetailView: View {
         VStack(spacing: 0) {
             TextEditor(text: text)
                 .focused($isFocused)
-                .font(.body)
+                .font(editorFont)
                 .padding(.horizontal, 16)
                 .padding(.top, 8)
-                .disabled(currentNote == nil || !viewModel.canEdit)
+                .disabled(currentNote == nil || !viewModel.canEdit || isReadOnly)
                 .accessibilityLabel("Текст заметки")
 
             if let note = currentNote {
                 HStack {
-                    Text("\(note.wordCount) слов, \(note.characterCount) симв.")
+                    if isReadOnly {
+                        Label("Только чтение", systemImage: "lock.fill")
+                            .foregroundColor(.orange)
+                    } else {
+                        Text("\(note.wordCount) слов, \(note.characterCount) симв.")
+                    }
                     Spacer()
                     Text(viewModel.hasUnsavedChanges
                          ? "Сохранение…"
@@ -61,6 +84,15 @@ struct NoteDetailView: View {
         .toolbar {
             ToolbarItemGroup(placement: .navigationBarTrailing) {
                 if let note = currentNote {
+                    // Кнопка расширенных настроек (по умолчанию всё скрыто в ней)
+                    Button {
+                        viewModel.flush()
+                        showingSettingsSheet = true
+                    } label: {
+                        Image(systemName: "ellipsis.circle")
+                    }
+                    .accessibilityLabel("Параметры заметки")
+
                     Button {
                         viewModel.flush()
                         showingShareSheet = true
@@ -99,6 +131,16 @@ struct NoteDetailView: View {
                 ShareSheet(activityItems: [note.text])
             }
         }
+        .sheet(isPresented: $showingSettingsSheet) {
+            NoteSettingsView(
+                fontSize: $fontSize,
+                fontDesign: $fontDesign,
+                isReadOnly: $isReadOnly,
+                note: currentNote,
+                onFormatText: formatText,
+                onCopyAll: copyAllText
+            )
+        }
         .alert("Удалить заметку?", isPresented: $showingDeleteAlert) {
             Button("Отмена", role: .cancel) {}
             Button("Удалить", role: .destructive) {
@@ -121,11 +163,27 @@ struct NoteDetailView: View {
             }
         }
         .onDisappear {
-            if showingShareSheet {
+            if showingShareSheet || showingSettingsSheet {
                 viewModel.flush()
             } else {
                 viewModel.finishEditing(id: noteId)
             }
         }
+    }
+
+    private func copyAllText() {
+        if let note = currentNote {
+            UIPasteboard.general.string = note.text
+        }
+    }
+
+    private func formatText() {
+        guard let note = currentNote else { return }
+        let lines = note.text.components(separatedBy: .newlines)
+        let cleaned = lines
+            .map { $0.trimmingCharacters(in: .whitespaces) }
+            .joined(separator: "\n")
+            .trimmingCharacters(in: .whitespacesAndNewlines)
+        viewModel.updateNote(id: noteId, text: cleaned)
     }
 }
