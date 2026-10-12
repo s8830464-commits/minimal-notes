@@ -81,22 +81,22 @@ struct NoteSettingsView: View {
                         HStack {
                             Text("Символов")
                             Spacer()
-                            Text("\(note.characterCount)").foregroundColor(.secondary)
+                            Text("\(note.characterCount)").foregroundColor(.primary)
                         }
                         HStack {
                             Text("Слов")
                             Spacer()
-                            Text("\(note.wordCount)").foregroundColor(.secondary)
+                            Text("\(note.wordCount)").foregroundColor(.primary)
                         }
                         HStack {
                             Text("Примерное время чтения")
                             Spacer()
-                            Text("~\(max(1, note.wordCount / 180)) мин").foregroundColor(.secondary)
+                            Text("~\(max(1, note.wordCount / 180)) мин").foregroundColor(.primary)
                         }
                         HStack {
                             Text("Последнее изменение")
                             Spacer()
-                            Text(note.formattedDate).foregroundColor(.secondary)
+                            Text(note.formattedDate).foregroundColor(.primary)
                         }
                     }
                 }

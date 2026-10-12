@@ -73,7 +73,7 @@ struct NoteDetailView: View {
                          : "Изменено: \(note.formattedDate)")
                 }
                 .font(.caption2)
-                .foregroundColor(.secondary)
+                .foregroundColor(.primary)
                 .padding(.horizontal, 20)
                 .padding(.vertical, 8)
                 .background(Color(uiColor: .secondarySystemBackground))

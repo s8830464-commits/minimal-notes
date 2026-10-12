@@ -439,7 +439,7 @@
         if (list.length === 0) return '';
         let html = `<div>`;
         if (title) {
-          html += `<div class="text-[11px] font-semibold tracking-wide text-neutral-400 uppercase px-2 mb-1.5">${title}</div>`;
+          html += `<div class="text-[11px] font-semibold tracking-wide text-[var(--text-secondary)] uppercase px-2 mb-1.5">${title}</div>`;
         }
         html += `<div class="bg-[var(--card-bg)] rounded-2xl divide-y divide-[var(--divider-color)] overflow-hidden shadow-sm border border-[var(--border-color)]">`;
         list.forEach(note => {
@@ -459,7 +459,7 @@
                   <span class="truncate">${escapeHtml(noteBody)}</span>
                 </div>
               </div>
-              <span class="text-neutral-500 text-xs font-bold pt-1">›</span>
+              <span class="text-[var(--text-secondary)] text-xs font-bold pt-1">›</span>
             </div>
           `;
         });
@@ -724,20 +724,20 @@
         document.documentElement.style.setProperty('--card-bg', '#ffffff');
         document.documentElement.style.setProperty('--border-color', 'rgba(0,0,0,0.08)');
         document.documentElement.style.setProperty('--divider-color', 'rgba(0,0,0,0.06)');
-        document.documentElement.style.setProperty('--text-primary', '#111827');
-        document.documentElement.style.setProperty('--text-secondary', '#6b7280');
+        document.documentElement.style.setProperty('--text-primary', '#000000');
+        document.documentElement.style.setProperty('--text-secondary', '#000000');
 
-        document.body.className = "bg-[#e5e5ea] text-neutral-900 flex flex-col items-center justify-center min-h-screen p-4 sm:p-6 transition-colors duration-300";
-        screen.className = "relative w-full h-full bg-[#f2f2f7] text-neutral-900 rounded-[42px] overflow-hidden flex flex-col transition-colors duration-300";
-        if (listTitleText) listTitleText.className = "text-[32px] font-bold tracking-tight text-neutral-900";
-        if (searchInput) searchInput.className = "w-full bg-[#e3e3e8] text-sm text-neutral-900 placeholder-neutral-500 rounded-xl pl-9 pr-3 py-2 outline-none focus:ring-1 focus:ring-orange-500 transition duration-200";
+        document.body.className = "bg-[#e5e5ea] text-black flex flex-col items-center justify-center min-h-screen p-4 sm:p-6 transition-colors duration-300";
+        screen.className = "relative w-full h-full bg-[#f2f2f7] text-black rounded-[42px] overflow-hidden flex flex-col transition-colors duration-300";
+        if (listTitleText) listTitleText.className = "text-[32px] font-bold tracking-tight text-black";
+        if (searchInput) searchInput.className = "w-full bg-[#e3e3e8] text-sm text-black placeholder-neutral-500 rounded-xl pl-9 pr-3 py-2 outline-none focus:ring-1 focus:ring-orange-500 transition duration-200";
         if (listBottomBar) listBottomBar.className = "h-16 border-t border-neutral-200/80 px-6 flex items-center justify-center bg-[#f2f2f7]/90 backdrop-blur";
         
-        detailView.className = "screen-view detail-hidden-right absolute inset-0 z-20 bg-white text-neutral-900 flex flex-col h-full";
+        detailView.className = "screen-view detail-hidden-right absolute inset-0 z-20 bg-white text-black flex flex-col h-full";
         detailView.style.backgroundColor = '#ffffff';
-        if (detailNavBar) detailNavBar.className = "pt-10 px-4 pb-2 border-b border-neutral-200/80 flex items-center justify-between bg-white/95 backdrop-blur text-neutral-900";
-        if (noteTextarea) noteTextarea.className = "w-full flex-1 bg-transparent text-neutral-900 placeholder-neutral-400 outline-none resize-none leading-relaxed tracking-normal font-sans transition-all duration-200";
-        if (editorFooter) editorFooter.className = "h-10 px-5 border-t border-neutral-200/80 bg-[#f9f9fb] flex items-center justify-between text-[11px] text-neutral-500 font-medium";
+        if (detailNavBar) detailNavBar.className = "pt-10 px-4 pb-2 border-b border-neutral-200/80 flex items-center justify-between bg-white/95 backdrop-blur text-black";
+        if (noteTextarea) noteTextarea.className = "w-full flex-1 bg-transparent text-black placeholder-neutral-400 outline-none resize-none leading-relaxed tracking-normal font-sans transition-all duration-200";
+        if (editorFooter) editorFooter.className = "h-10 px-5 border-t border-neutral-200/80 bg-[#f9f9fb] flex items-center justify-between text-[11px] text-black font-semibold";
 
         settingsSheet.style.backgroundColor = '#f2f2f7';
         settingsSheet.style.color = '#111827';

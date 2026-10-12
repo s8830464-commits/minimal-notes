@@ -149,8 +149,8 @@ struct NoteRowView: View {
                 Text(note.title).font(.body.weight(.semibold)).lineLimit(1)
             }
             HStack(spacing: 8) {
-                Text(note.formattedDate).font(.subheadline).foregroundColor(.secondary)
-                Text(note.previewBody).font(.subheadline).foregroundColor(.secondary).lineLimit(1)
+                Text(note.formattedDate).font(.subheadline).foregroundColor(.primary)
+                Text(note.previewBody).font(.subheadline).foregroundColor(.primary).lineLimit(1)
             }
         }
         .padding(.vertical, 2)
