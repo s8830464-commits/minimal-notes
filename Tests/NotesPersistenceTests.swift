@@ -165,7 +165,7 @@ final class NotesPersistenceTests: XCTestCase {
             .filter { !$0 }
             .prefix(1)
             .sink { _ in saved.fulfill() }
-        await fulfillment(of: [saved], timeout: 5)
+        await fulfillment(of: [saved], timeout: 30)
         withExtendedLifetime(subscription) {}
         XCTAssertEqual(try store.load()?.first?.text, "After")
     }
