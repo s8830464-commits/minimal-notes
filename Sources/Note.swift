@@ -9,7 +9,7 @@ struct Note: Identifiable, Codable, Equatable {
 
     // Title is the first non-empty line of the note
     var title: String {
-        let lines = text.split(whereSeparator: \.isNewline).map { $0.trimmingCharacters(in: .whitespaces) }
+        let lines = text.split(whereSeparator: \.isNewline).lazy.map { $0.trimmingCharacters(in: .whitespaces) }
         guard let first = lines.first(where: { !$0.isEmpty }) else {
             return "Новая заметка"
         }
@@ -18,8 +18,8 @@ struct Note: Identifiable, Codable, Equatable {
 
     // Body preview is the second line/remaining preview
     var previewBody: String {
-        let lines = text.split(whereSeparator: \.isNewline).map { $0.trimmingCharacters(in: .whitespaces) }
-        let nonEmpties = lines.filter { !$0.isEmpty }
+        let lines = text.split(whereSeparator: \.isNewline).lazy.map { $0.trimmingCharacters(in: .whitespaces) }
+        let nonEmpties = Array(lines.filter { !$0.isEmpty }.prefix(2))
         if nonEmpties.count > 1 {
             return String(nonEmpties[1])
         }

@@ -6,3 +6,7 @@ DerivedData/
 *.xcworkspace
 Payload/
 *.ipa
+dist/
+__pycache__/
+*.pyc
+*.xcresult

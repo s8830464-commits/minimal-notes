@@ -2,52 +2,42 @@ name: Build iOS IPA
 
 on:
   push:
-    branches: [ "main", "master" ]
+    branches: [main, master, "codex/notes-ios27-fixes"]
+    paths-ignore: ["**/*.md"]
   workflow_dispatch:
+
+permissions:
+  contents: read
 
 jobs:
   build:
-    runs-on: macos-15
+    runs-on: xcode-27
+    timeout-minutes: 40
+    env:
+      DEVELOPER_DIR: /Applications/Xcode_27.2.app/Contents/Developer
+      EXPECTED_IOS_SDK: "27.2"
 
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
 
-      - name: Select Xcode 16
+      - name: Check Xcode and target SDK
         run: |
-          XCODE_APP=$(ls -d /Applications/Xcode_16*.app 2>/dev/null | head -n 1)
-          if [ -n "$XCODE_APP" ]; then
-            sudo xcode-select -s "$XCODE_APP"
-          fi
+          test -d "$DEVELOPER_DIR"
           xcodebuild -version
+          xcrun --sdk iphoneos --show-sdk-version
+          xcrun simctl list runtimes
 
       - name: Install XcodeGen
-        run: brew install xcodegen
+        run: command -v xcodegen >/dev/null || brew install xcodegen
 
-      - name: Generate Xcode Project
-        run: xcodegen generate
+      - name: Test and build unsigned IPA
+        run: bash scripts/build_ipa.sh
 
-      - name: Build Archive (Unsigned)
-        run: |
-          xcodebuild -project NotesApp.xcodeproj \
-            -scheme NotesApp \
-            -configuration Release \
-            -destination "generic/platform=iOS" \
-            -archivePath build/NotesApp.xcarchive \
-            archive \
-            CODE_SIGNING_ALLOWED=NO \
-            CODE_SIGNING_REQUIRED=NO \
-            CODE_SIGN_IDENTITY=""
-
-      - name: Package IPA
-        run: |
-          mkdir -p Payload
-          cp -r build/NotesApp.xcarchive/Products/Applications/NotesApp.app Payload/
-          zip -r -y NotesApp.ipa Payload
-
-      - name: Upload IPA Artifact
+      - name: Upload verified unsigned IPA
         uses: actions/upload-artifact@v4
         with:
-          name: NotesApp-ipa
-          path: NotesApp.ipa
+          name: NotesApp-1.0.1-unsigned
+          path: dist/
+          if-no-files-found: error
           retention-days: 14
