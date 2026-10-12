@@ -43,5 +43,9 @@
     </array>
     <key>ITSAppUsesNonExemptEncryption</key>
     <false/>
+    <key>NSMicrophoneUsageDescription</key>
+    <string>Микрофон используется для голосового ввода заметок.</string>
+    <key>NSSpeechRecognitionUsageDescription</key>
+    <string>Распознавание речи используется для диктовки заметок голосом.</string>
 </dict>
 </plist>

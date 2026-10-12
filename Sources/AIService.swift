@@ -4,6 +4,7 @@ public enum AIProcessingMode: String, CaseIterable, Identifiable {
     case fixErrors = "fix_errors"
     case formatAndBeautify = "format_beautify"
     case summary = "summary"
+    case voiceToNote = "voice_to_note"
 
     public var id: String { rawValue }
 
@@ -12,6 +13,7 @@ public enum AIProcessingMode: String, CaseIterable, Identifiable {
         case .fixErrors: return "Исправить ошибки"
         case .formatAndBeautify: return "Оформить и структурировать"
         case .summary: return "Краткая выжимка (тезисы)"
+        case .voiceToNote: return "Голосовая заметка (ИИ)"
         }
     }
 
@@ -45,6 +47,17 @@ public enum AIProcessingMode: String, CaseIterable, Identifiable {
 1. Выдели главные мысли, решения или важные тезисы.
 2. Изложи тезисно и понятно.
 3. Верни ТОЛЬКО текст выжимки без предисловий.
+"""
+        case .voiceToNote:
+            return """
+Ты профессиональный редактор голосовых заметок на русском языке.
+Пользователь надиктовал свои мысли голосом. Твоя задача: превратить этот речевой поток в аккуратный, чистый и грамотный текст заметки.
+Правила:
+1. Исправь ошибки и оговорки распознавания речи, расставь знаки препинания, точки, запятые и заглавные буквы.
+2. Разбей текст на логичные абзацы, если мыслей несколько.
+3. Сохраняй авторские слова, разговорный стиль, сленг и экспрессию без цензуры и морализаторства.
+4. Не искажай смысл сказанного.
+5. Верни ТОЛЬКО готовый текст заметки без вступительных фраз.
 """
         }
     }

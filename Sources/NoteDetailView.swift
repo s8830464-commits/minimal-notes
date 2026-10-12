@@ -16,6 +16,8 @@ struct NoteDetailView: View {
     @Environment(\.dismiss) private var dismiss
     let noteId: UUID
 
+    @StateObject private var speechService = SpeechService()
+
     @State private var didRequestFocus = false
     @State private var showingShareSheet = false
     @State private var showingSettingsSheet = false
@@ -74,14 +76,16 @@ struct NoteDetailView: View {
                         Text("\(note.wordCount) слов, \(note.characterCount) симв.")
                     }
                     Spacer()
-                    Text(isProcessingAI
-                         ? "Обработка нейросетью…"
-                         : (viewModel.hasUnsavedChanges
-                            ? "Сохранение…"
-                            : "Изменено: \(note.formattedDate)"))
+                    Text(speechService.isRecording
+                         ? "Идет запись голоса… Говорите"
+                         : (isProcessingAI
+                            ? "Обработка нейросетью…"
+                            : (viewModel.hasUnsavedChanges
+                               ? "Сохранение…"
+                               : "Изменено: \(note.formattedDate)")))
                 }
                 .font(.caption2)
-                .foregroundColor(.primary)
+                .foregroundColor(speechService.isRecording ? .red : .primary)
                 .padding(.horizontal, 20)
                 .padding(.vertical, 8)
                 .background(Color(uiColor: .secondarySystemBackground))
@@ -92,6 +96,21 @@ struct NoteDetailView: View {
         .toolbar {
             ToolbarItemGroup(placement: .navigationBarTrailing) {
                 if let note = currentNote {
+                    // Кнопка голосовой диктовки с ИИ-обработкой
+                    Button {
+                        toggleVoiceDictation()
+                    } label: {
+                        if speechService.isRecording {
+                            Image(systemName: "mic.fill")
+                                .foregroundColor(.red)
+                        } else {
+                            Image(systemName: "mic")
+                        }
+                    }
+                    .buttonStyle(AppleSpringButtonStyle())
+                    .accessibilityLabel("Диктовать заметку голосом")
+                    .disabled(isProcessingAI || isReadOnly)
+
                     // Кнопка нейросети в 1 нажатие (Sparkles)
                     Button {
                         runDirectAIAction()
@@ -191,6 +210,9 @@ struct NoteDetailView: View {
             }
         }
         .onDisappear {
+            if speechService.isRecording {
+                speechService.stopRecording { _ in }
+            }
             if showingShareSheet || showingSettingsSheet {
                 viewModel.flush()
             } else {
@@ -202,6 +224,49 @@ struct NoteDetailView: View {
     private func copyAllText() {
         if let note = currentNote {
             UIPasteboard.general.string = note.text
+        }
+    }
+
+    private func toggleVoiceDictation() {
+        if speechService.isRecording {
+            speechService.stopRecording { spokenText in
+                guard !spokenText.isEmpty else { return }
+                isProcessingAI = true
+                let key = openRouterApiKey.isEmpty ? AIService.embeddedAPIKey : openRouterApiKey
+                let model = selectedModel
+
+                Task {
+                    do {
+                        let cleanedNote = try await AIService.shared.process(
+                            text: spokenText,
+                            mode: .voiceToNote,
+                            apiKey: key,
+                            model: model
+                        )
+                        await MainActor.run {
+                            if let note = currentNote {
+                                let newText: String
+                                if note.text.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty {
+                                    newText = cleanedNote
+                                } else {
+                                    newText = note.text + "\n\n" + cleanedNote
+                                }
+                                viewModel.updateNote(id: note.id, text: newText)
+                                viewModel.flush()
+                            }
+                            isProcessingAI = false
+                        }
+                    } catch {
+                        await MainActor.run {
+                            isProcessingAI = false
+                            aiErrorMessage = error.localizedDescription
+                            showingAIErrorAlert = true
+                        }
+                    }
+                }
+            }
+        } else {
+            speechService.startRecording()
         }
     }
 

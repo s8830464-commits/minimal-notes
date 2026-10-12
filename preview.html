@@ -187,6 +187,13 @@
 
    <!-- Trailing Toolbar Buttons -->
    <div class="flex items-center gap-2">
+   <!-- Voice Dictation Button (Mic) -->
+   <button id="voiceDictationBtn" class="apple-press text-[#3a3a3c] hover:text-black p-1.5 rounded-full transition-colors" title="Диктовать заметку голосом">
+    <svg id="micIcon" class="w-5 h-5 stroke-current fill-none stroke-[2]" viewBox="0 0 24 24">
+     <path stroke-linecap="round" stroke-linejoin="round" d="M12 18.75a6 6 0 006-6v-1.5m-6 7.5a6 6 0 01-6-6v-1.5m6 7.5v3.75m-3.75 0h7.5M12 15a3 3 0 003-3V6a3 3 0 00-6 0v6a3 3 0 003 3z"/>
+    </svg>
+   </button>
+
    <!-- Direct AI button (Sparkles) in 1 tap -->
    <button id="directAiBtn" class="apple-press text-[#3a3a3c] hover:text-black p-1.5 rounded-full" title="Обработать нейросетью в 1 нажатие">
     <svg class="w-5 h-5 stroke-current fill-none stroke-[2]" viewBox="0 0 24 24">
@@ -310,6 +317,7 @@
      </div>
      <select id="openRouterModeSelect" class="bg-[#f2f2f7] text-black text-xs font-semibold px-3 py-1.5 rounded-xl outline-none border border-neutral-300 focus:border-[#3a3a3c] transition">
       <option value="fix_errors">Исправить ошибки</option>
+      <option value="voice_to_note">Голосовая заметка (ИИ)</option>
       <option value="format_beautify">Оформить структуру</option>
       <option value="summary">Краткая выжимка</option>
      </select>
@@ -458,6 +466,8 @@
  const backToListBtn = document.getElementById('backToListBtn');
  const deleteDetailBtn = document.getElementById('deleteDetailBtn');
  const doneEditingBtn = document.getElementById('doneEditingBtn');
+ const voiceDictationBtn = document.getElementById('voiceDictationBtn');
+ const micIcon = document.getElementById('micIcon');
  
 
  // Render Note List with smooth Apple row hover/active
@@ -750,6 +760,7 @@
  const FALLBACK_MODEL = 'nvidia/nemotron-3.5-lightning:free';
 
  const PROMPTS = {
+  voice_to_note: 'Ты профессиональный редактор голосовых заметок на русском языке. Перед тобой сырой текст распознавания речи, надиктованный пользователем. Твоя задача: превратить этот речевой поток в аккуратный, чистый, грамотный и связный текст заметки. Исправь ошибки и оговорки распознавания речи, расставь знаки препинания, точки, запятые и заглавные буквы. Разбей текст на логичные абзацы. Сохраняй авторские слова, разговорный стиль, сленг и экспрессию без цензуры и морализаторства. Не искажай смысл сказанного. Верни ТОЛЬКО готовый текст заметки без вступительных фраз и кавычек.',
   fix_errors: 'Ты профессиональный редактор русского языка. Твоя единственная задача: исправить все орфографические, пунктуационные и грамматические ошибки в тексте. Сохраняй исходную структуру текста, разделение на абзацы и авторский стиль (включая разговорную лексику, сленг или нецензурные слова, если они есть) без цензуры и морализаторства. Не меняй смысл предложений. Верни ТОЛЬКО исправленный текст без вступительных слов, пояснений и кавычек.',
   format_beautify: 'Ты мастер верстки и типографики заметок на русском языке. Твоя задача: сделать текст аккуратным, опрятным и удобным для чтения. Исправь все орфографические и пунктуационные ошибки. Разбей сплошной текст на логичные абзацы. Если есть перечисления или списки — аккуратно оформи их списками через тире. Сохраняй авторский стиль без цензуры. Верни ТОЛЬКО готовый текст заметки без пояснений.',
   summary: 'Ты аналитический редактор. Твоя задача: составить краткую и емкую выжимку ключевых мыслей из текста заметки на русском языке. Верни ТОЛЬКО текст выжимки без предисловий.'
@@ -879,6 +890,124 @@
 
  if (directAiBtn) directAiBtn.addEventListener('click', processWithAI);
  if (cleanWhitespaceBtn) cleanWhitespaceBtn.addEventListener('click', processWithAI);
+
+ // Voice Dictation via Web Speech API + AI Processing
+ let speechRecognitionInstance = null;
+ let isVoiceRecording = false;
+ let transcribedSpeech = '';
+
+ const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
+
+ function setMicRecordingState(recording) {
+  isVoiceRecording = recording;
+  if (!voiceDictationBtn) return;
+  if (recording) {
+   voiceDictationBtn.classList.add('text-red-500', 'animate-pulse');
+   voiceDictationBtn.classList.remove('text-[#3a3a3c]');
+   wordCharStats.textContent = 'Идет запись... Говорите';
+  } else {
+   voiceDictationBtn.classList.remove('text-red-500', 'animate-pulse');
+   voiceDictationBtn.classList.add('text-[#3a3a3c]');
+   updateStats();
+  }
+ }
+
+ async function handleVoiceProcessing(rawText) {
+  const speechText = rawText.trim();
+  if (!speechText) {
+   setMicRecordingState(false);
+   return;
+  }
+
+  wordCharStats.textContent = 'Обработка нейросетью...';
+  const key = (openRouterKeyInput ? openRouterKeyInput.value.trim() : '') || localStorage.getItem('notes_openrouter_key') || EMBEDDED_KEY;
+  const model = (openRouterModelSelect ? openRouterModelSelect.value : '') || localStorage.getItem('notes_openrouter_model') || DEFAULT_MODEL;
+
+  try {
+   let result = '';
+   try {
+    result = await executeAICall(speechText, PROMPTS.voice_to_note, key, model);
+   } catch (e) {
+    console.warn('Voice AI primary failed, fallback:', e);
+    result = await executeAICall(speechText, PROMPTS.voice_to_note, key, FALLBACK_MODEL);
+   }
+
+   const cleanText = result || speechText;
+   const existing = noteTextarea.value.trim();
+   noteTextarea.value = existing ? (existing + '\n\n' + cleanText) : cleanText;
+   updateStats();
+  } catch (err) {
+   console.error('AI voice error:', err);
+   const existing = noteTextarea.value.trim();
+   noteTextarea.value = existing ? (existing + '\n\n' + speechText) : speechText;
+   updateStats();
+   alert('Нейросеть недоступна, добавлен распознанный текст без обработки: ' + err.message);
+  } finally {
+   setMicRecordingState(false);
+  }
+ }
+
+ function toggleVoiceDictation() {
+  if (!SpeechRecognition) {
+   const sample = prompt('Браузер не поддерживает распознавание речи напрямую. Введите текст фразы для проверки ИИ-обработки:');
+   if (sample) handleVoiceProcessing(sample);
+   return;
+  }
+
+  if (isVoiceRecording) {
+   if (speechRecognitionInstance) {
+    try { speechRecognitionInstance.stop(); } catch(e) {}
+   }
+   return;
+  }
+
+  try {
+   speechRecognitionInstance = new SpeechRecognition();
+   speechRecognitionInstance.lang = 'ru-RU';
+   speechRecognitionInstance.continuous = true;
+   speechRecognitionInstance.interimResults = true;
+   transcribedSpeech = '';
+
+   speechRecognitionInstance.onstart = () => {
+    setMicRecordingState(true);
+   };
+
+   speechRecognitionInstance.onresult = (e) => {
+    let interim = '';
+    for (let i = e.resultIndex; i < e.results.length; ++i) {
+     if (e.results[i].isFinal) {
+      transcribedSpeech += e.results[i][0].transcript + ' ';
+     } else {
+      interim += e.results[i][0].transcript;
+     }
+    }
+    wordCharStats.textContent = 'Слушаю: ' + (interim || transcribedSpeech || '...');
+   };
+
+   speechRecognitionInstance.onerror = (e) => {
+    console.error('Speech recognition error:', e.error);
+    setMicRecordingState(false);
+    if (e.error === 'not-allowed') {
+     alert('Доступ к микрофону заблокирован в настройках браузера.');
+    }
+   };
+
+   speechRecognitionInstance.onend = () => {
+    if (isVoiceRecording) {
+     handleVoiceProcessing(transcribedSpeech);
+    }
+   };
+
+   speechRecognitionInstance.start();
+  } catch (err) {
+   console.error('Start recognition error:', err);
+   setMicRecordingState(false);
+   alert('Не удалось запустить микрофон: ' + err.message);
+  }
+ }
+
+ if (voiceDictationBtn) voiceDictationBtn.addEventListener('click', toggleVoiceDictation);
+
 
  // Theme Toggle (Light / Dark)
  function applyTheme() {
