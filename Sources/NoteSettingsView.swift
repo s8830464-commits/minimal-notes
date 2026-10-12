@@ -167,6 +167,15 @@ struct NoteSettingsView: View {
             }
             .navigationTitle("Параметры заметки")
             .navigationBarTitleDisplayMode(.inline)
+            .toolbar {
+                ToolbarItem(placement: .confirmationAction) {
+                    Button("Готово") {
+                        dismiss()
+                    }
+                    .font(.body.weight(.semibold))
+                    .foregroundColor(.primary)
+                }
+            }
             .alert("Ошибка ИИ", isPresented: $showErrorAlert) {
                 Button("ОК", role: .cancel) {}
             } message: {

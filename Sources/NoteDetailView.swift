@@ -197,6 +197,18 @@ struct NoteDetailView: View {
         } message: {
             Text(aiErrorMessage)
         }
+        .alert("Ошибка микрофона", isPresented: Binding(
+            get: { speechService.errorMessage != nil },
+            set: { if !$0 { speechService.errorMessage = nil } }
+        )) {
+            Button("ОК", role: .cancel) {
+                speechService.errorMessage = nil
+            }
+        } message: {
+            if let errorMsg = speechService.errorMessage {
+                Text(errorMsg)
+            }
+        }
         .task {
             guard !didRequestFocus else { return }
             didRequestFocus = true
@@ -259,7 +271,17 @@ struct NoteDetailView: View {
                     } catch {
                         await MainActor.run {
                             isProcessingAI = false
-                            aiErrorMessage = error.localizedDescription
+                            if let note = currentNote {
+                                let newText: String
+                                if note.text.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty {
+                                    newText = spokenText
+                                } else {
+                                    newText = note.text + "\n\n" + spokenText
+                                }
+                                viewModel.updateNote(id: note.id, text: newText)
+                                viewModel.flush()
+                            }
+                            aiErrorMessage = "Речь записана, но произошла ошибка обработки ИИ: \(error.localizedDescription). Исходный текст сохранён."
                             showingAIErrorAlert = true
                         }
                     }

@@ -402,34 +402,66 @@
 
  <script>
  // State
- let isDarkMode = false;
- let currentNoteId = null;
- let notes = [
-  {
-  id: "1",
-  text: "Добро пожаловать в Заметки \n\nЭто минималистичное и быстрое приложение:\n\n• Первая строка автоматически становится заголовком.\n• Свайп вправо закрепляет заметку.\n• Свайп влево удаляет заметку.\n• Все данные хранятся локально.",
-  isPinned: true,
-  date: "14:20"
-  },
-  {
-  id: "2",
-  text: "Список покупок к выходным\n\n1. Молоко овсяное\n2. Свежий кофе в зернах\n3. Сыр пармезан\n4. Зелень и руккола",
-  isPinned: false,
-  date: "Вчера"
-  },
-  {
-  id: "3",
-  text: "Идеи для нового проекта\n\nСделать красивый предпросмотр в стиле iPhone для быстрой оценки дизайна и эргономики.",
-  isPinned: false,
-  date: "9 окт"
-  }
- ];
+ const STORAGE_KEY_NOTES = 'apple_notes_data';
+ const STORAGE_KEY_SETTINGS = 'apple_notes_settings';
+ const STORAGE_KEY_THEME = 'apple_notes_theme';
 
- let settings = {
-  fontStyle: 'sans',
-  fontSize: 17,
-  readOnly: false
- };
+ let isDarkMode = localStorage.getItem(STORAGE_KEY_THEME) === 'dark';
+ let currentNoteId = null;
+
+ function loadNotes() {
+  try {
+   const saved = localStorage.getItem(STORAGE_KEY_NOTES);
+   if (saved) return JSON.parse(saved);
+  } catch(e) {
+   console.warn('Failed to load notes from localStorage:', e);
+  }
+  return [
+   {
+    id: "1",
+    text: "Добро пожаловать в Заметки \n\nЭто минималистичное и быстрое приложение:\n\n• Первая строка автоматически становится заголовком.\n• Свайп вправо закрепляет заметку.\n• Свайп влево удаляет заметку.\n• Все данные хранятся локально.",
+    isPinned: true,
+    date: "14:20"
+   },
+   {
+    id: "2",
+    text: "Список покупок к выходным\n\n1. Молоко овсяное\n2. Свежий кофе в зернах\n3. Сыр пармезан\n4. Зелень и руккола",
+    isPinned: false,
+    date: "Вчера"
+   },
+   {
+    id: "3",
+    text: "Идеи для нового проекта\n\nСделать красивый предпросмотр в стиле iPhone для быстрой оценки дизайна и эргономики.",
+    isPinned: false,
+    date: "9 окт"
+   }
+  ];
+ }
+
+ function saveNotes() {
+  try {
+   localStorage.setItem(STORAGE_KEY_NOTES, JSON.stringify(notes));
+  } catch(e) {
+   console.warn('Failed to save notes:', e);
+  }
+ }
+
+ let notes = loadNotes();
+
+ function loadSettings() {
+  try {
+   const saved = localStorage.getItem(STORAGE_KEY_SETTINGS);
+   if (saved) return JSON.parse(saved);
+  } catch(e) {}
+  return {
+   fontStyle: 'sans',
+   fontSize: 17,
+   readOnly: false
+  };
+ }
+
+ let settings = loadSettings();
+ let isProcessingAI = false;
 
  // DOM Elements
  const screen = document.getElementById('screen');
@@ -472,7 +504,8 @@
 
  // Render Note List with smooth Apple row hover/active
  function renderNotes() {
-  const query = searchInput.value.toLowerCase().trim();
+  if (!notesContainer) return;
+  const query = (searchInput && searchInput.value ? searchInput.value : '').toLowerCase().trim();
   const filtered = notes.filter(n => n.text.toLowerCase().includes(query));
 
   const pinned = filtered.filter(n => n.isPinned);
@@ -566,11 +599,15 @@
 
   if (currentNoteId) {
   const note = notes.find(n => n.id === currentNoteId);
-  if (note) note.text = text;
+  if (note) {
+   note.text = text;
+   saveNotes();
+  }
   }
  }
 
  function applyEditorSettings() {
+  localStorage.setItem(STORAGE_KEY_SETTINGS, JSON.stringify(settings));
   noteTextarea.style.fontSize = `${settings.fontSize}px`;
   fontSizeDisplay.textContent = `${settings.fontSize} пт`;
   fontSizeSlider.value = settings.fontSize;
@@ -671,7 +708,7 @@
  window.addEventListener('touchend', handleTouchEnd);
 
  sheetBackdrop.addEventListener('click', closeSettings);
- sheetHeader.addEventListener('click', closeSettings);
+ // Close handled via backdrop & button
 
  // Event Listeners
  searchInput.addEventListener('input', renderNotes);
@@ -686,6 +723,7 @@
   date: 'Только что'
   };
   notes.unshift(newNote);
+  saveNotes();
   openNote(newId);
   setTimeout(() => noteTextarea.focus(), 250);
  });
@@ -760,7 +798,7 @@
  const FALLBACK_MODEL = 'nvidia/nemotron-3.5-lightning:free';
 
  const PROMPTS = {
-  voice_to_note: 'Ты профессиональный редактор голосовых заметок на русском языке. Перед тобой сырой текст распознавания речи, надиктованный пользователем. Твоя задача: превратить этот речевой поток в аккуратный, чистый, грамотный и связный текст заметки. Исправь ошибки и оговорки распознавания речи, расставь знаки препинания, точки, запятые и заглавные буквы. Разбей текст на логичные абзацы. Сохраняй авторские слова, разговорный стиль, сленг и экспрессию без цензуры и морализаторства. Не искажай смысл сказанного. Верни ТОЛЬКО готовый текст заметки без вступительных фраз и кавычек.',
+  voice_to_note: 'Ты профессиональный билингвальный редактор голосовых заметок (русский и английский языки). Перед тобой сырой текст распознавания речи, надиктованный пользователем. Твоя задача: превратить этот речевой поток в аккуратный, чистый, грамотный и связный текст заметки. Правила: 1) Если пользователь говорит на русском, но употребляет английские термины, технические названия, фреймворки, бренды или фразы (например: Mobile Gestalt, MobileGestalt, SwiftUI, API, backend, framework, Apple, OpenRouter) — пиши их на ПРАВИЛЬНОМ АНГЛИЙСКОМ ЯЗЫКЕ. Не транслитерируй английские слова русскими буквами (не пиши мобил гештальт, пиши Mobile Gestalt). 2) Если пользователь переключается на английский язык или произносит фразы на английском — пиши их на чистом английском языке с правильной грамматикой. 3) Исправь ошибки и оговорки распознавания речи, расставь знаки препинания, точки, запятые и заглавные буквы. 4) Разбей текст на логичные абзацы. 5) Сохраняй авторские слова, разговорный стиль, сленг и экспрессию без цензуры и морализаторства. 6) Верни ТОЛЬКО готовый текст заметки без вступительных фраз и кавычек.',
   fix_errors: 'Ты профессиональный редактор русского языка. Твоя единственная задача: исправить все орфографические, пунктуационные и грамматические ошибки в тексте. Сохраняй исходную структуру текста, разделение на абзацы и авторский стиль (включая разговорную лексику, сленг или нецензурные слова, если они есть) без цензуры и морализаторства. Не меняй смысл предложений. Верни ТОЛЬКО исправленный текст без вступительных слов, пояснений и кавычек.',
   format_beautify: 'Ты мастер верстки и типографики заметок на русском языке. Твоя задача: сделать текст аккуратным, опрятным и удобным для чтения. Исправь все орфографические и пунктуационные ошибки. Разбей сплошной текст на логичные абзацы. Если есть перечисления или списки — аккуратно оформи их списками через тире. Сохраняй авторский стиль без цензуры. Верни ТОЛЬКО готовый текст заметки без пояснений.',
   summary: 'Ты аналитический редактор. Твоя задача: составить краткую и емкую выжимку ключевых мыслей из текста заметки на русском языке. Верни ТОЛЬКО текст выжимки без предисловий.'
@@ -839,6 +877,15 @@
    alert('Заметка пустая. Напишите текст для обработки.');
    return;
   }
+
+  if (isVoiceRecording) {
+   if (speechRecognitionInstance) {
+    try { speechRecognitionInstance.stop(); } catch(e) {}
+   }
+   setMicRecordingState(false);
+  }
+  if (isProcessingAI) return;
+  isProcessingAI = true;
 
   const key = (openRouterKeyInput ? openRouterKeyInput.value.trim() : '') || localStorage.getItem('notes_openrouter_key') || EMBEDDED_KEY;
   const model = (openRouterModelSelect ? openRouterModelSelect.value : '') || localStorage.getItem('notes_openrouter_model') || DEFAULT_MODEL;
@@ -1073,7 +1120,19 @@
    settingsSheet.style.backgroundColor = '#f2f2f7';
    settingsSheet.style.color = '#000000';
    if (sheetHeaderTitle) sheetHeaderTitle.className = "text-base font-bold text-black";
+   if (fontStyleSelect) fontStyleSelect.className = "bg-[#f2f2f7] text-black text-xs font-semibold px-2.5 py-1.5 rounded-lg outline-none border border-neutral-300 focus:border-[#3a3a3c] transition";
 
+   document.querySelectorAll('#settingsSheet .bg-\[\#1c1c1e\], #settingsSheet .bg-white').forEach(el => {
+    if (el.classList.contains('divide-y') || el.classList.contains('divide-neutral-200') || el.classList.contains('divide-neutral-800') || el.classList.contains('divide-neutral-100')) {
+     el.className = "bg-white rounded-2xl divide-y divide-neutral-100 border border-neutral-200/80 shadow-sm overflow-hidden";
+    } else if (el.classList.contains('text-xs') || el.id === 'statChars') {
+     el.className = "bg-white rounded-2xl border border-neutral-200/80 shadow-sm p-4 space-y-2.5 text-xs text-black";
+    } else {
+     el.className = "bg-white rounded-2xl border border-neutral-200/80 shadow-sm p-3.5 space-y-3.5";
+    }
+   });
+
+   localStorage.setItem(STORAGE_KEY_THEME, isDarkMode ? 'dark' : 'light');
     }
     renderNotes();
   }
