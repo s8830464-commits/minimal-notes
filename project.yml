@@ -3,7 +3,9 @@ options:
   bundleIdPrefix: com.ivan
   deploymentTarget:
     iOS: "15.0"
-  xcodeVersion: "15.0"
+settings:
+  base:
+    SWIFT_VERSION: "5.0"
 targets:
   NotesApp:
     type: application
@@ -11,17 +13,30 @@ targets:
     deploymentTarget: "15.0"
     sources:
       - Sources
-    info:
-      path: Resources/Info.plist
     settings:
       base:
         PRODUCT_NAME: NotesApp
         PRODUCT_BUNDLE_IDENTIFIER: com.ivan.minimalnotes
         TARGETED_DEVICE_FAMILY: "1,2"
-        SWIFT_VERSION: "5.9"
-        IPHONEOS_DEPLOYMENT_TARGET: "15.0"
         GENERATE_INFOPLIST_FILE: NO
         INFOPLIST_FILE: Resources/Info.plist
-        CODE_SIGNING_ALLOWED: NO
-        CODE_SIGNING_REQUIRED: NO
-        CODE_SIGN_IDENTITY: ""
+  NotesAppTests:
+    type: bundle.unit-test
+    platform: iOS
+    deploymentTarget: "15.0"
+    sources:
+      - Tests
+    dependencies:
+      - target: NotesApp
+    settings:
+      base:
+        GENERATE_INFOPLIST_FILE: YES
+        PRODUCT_BUNDLE_IDENTIFIER: com.ivan.minimalnotes.tests
+schemes:
+  NotesApp:
+    build:
+      targets:
+        NotesApp: all
+    test:
+      targets:
+        - NotesAppTests
