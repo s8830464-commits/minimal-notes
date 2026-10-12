@@ -34,7 +34,7 @@ struct NoteSettingsView: View {
                                 .foregroundColor(.secondary)
                         }
                         Slider(value: $fontSize, in: 14...28, step: 1)
-                            .tint(.orange)
+                            .tint(Color(red: 0.23, green: 0.23, blue: 0.24))
                     }
 
                     Toggle(isOn: $isReadOnly) {
@@ -45,7 +45,7 @@ struct NoteSettingsView: View {
                                 .foregroundColor(.secondary)
                         }
                     }
-                    .tint(.orange)
+                    .tint(Color(red: 0.23, green: 0.23, blue: 0.24))
                 }
 
                 // Раздел: Быстрые действия

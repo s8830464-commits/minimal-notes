@@ -98,7 +98,7 @@ struct NotesListView: View {
             }
         }
         .animation(.spring(response: 0.35, dampingFraction: 0.8), value: viewModel.notes)
-        .tint(.orange)
+        .tint(Color(red: 0.23, green: 0.23, blue: 0.24))
     }
 
     private func rows(_ notes: [Note]) -> some View {
@@ -111,7 +111,7 @@ struct NotesListView: View {
                         Label(note.isPinned ? "Открепить" : "Закрепить",
                               systemImage: note.isPinned ? "pin.slash.fill" : "pin.fill")
                     }
-                    .tint(.orange)
+                    .tint(Color(red: 0.23, green: 0.23, blue: 0.24))
                 }
                 .swipeActions(edge: .trailing, allowsFullSwipe: true) {
                     Button(role: .destructive) {
@@ -144,7 +144,7 @@ struct NoteRowView: View {
         VStack(alignment: .leading, spacing: 4) {
             HStack(spacing: 4) {
                 if note.isPinned {
-                    Image(systemName: "pin.fill").font(.caption2).foregroundColor(.orange)
+                    Image(systemName: "pin.fill").font(.caption2).foregroundColor(Color(red: 0.23, green: 0.23, blue: 0.24))
                 }
                 Text(note.title).font(.body.weight(.semibold)).lineLimit(1)
             }

@@ -166,7 +166,7 @@
             <svg class="absolute left-3 top-2.5 w-4 h-4 text-neutral-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.2" d="M21 21l-4.35-4.35M17 11a6 6 0 11-12 0 6 6 0 0112 0z"/>
             </svg>
-            <input id="searchInput" type="text" placeholder="Поиск" class="w-full bg-[#2c2c2e] text-sm text-white placeholder-neutral-400 rounded-xl pl-9 pr-3 py-2 outline-none focus:ring-1 focus:ring-orange-500 transition duration-200">
+            <input id="searchInput" type="text" placeholder="Поиск" class="w-full bg-[#2c2c2e] text-sm text-white placeholder-neutral-400 rounded-xl pl-9 pr-3 py-2 outline-none focus:ring-1 focus:ring-neutral-700 transition duration-200">
           </div>
         </div>
 
@@ -177,7 +177,7 @@
 
         <!-- Bottom Bar: Centered Plus Button with Apple Spring Physics -->
         <div class="h-16 border-t border-neutral-800/80 px-6 flex items-center justify-center bg-[#1c1c1e]/90 backdrop-blur" id="listBottomBar">
-          <button id="newNoteBtn" class="apple-press w-11 h-11 bg-orange-500 hover:bg-orange-600 active:scale-88 text-white rounded-full flex items-center justify-center shadow-lg shadow-orange-500/30 transition-colors" title="Создать заметку">
+          <button id="newNoteBtn" class="apple-press w-11 h-11 bg-[#3a3a3c] hover:bg-[#2c2c2e] active:scale-88 text-white rounded-full flex items-center justify-center shadow-lg shadow-neutral-800/30 transition-colors" title="Создать заметку">
             <svg class="w-6 h-6 stroke-current fill-none stroke-[2.6]" viewBox="0 0 24 24">
               <path stroke-linecap="round" stroke-linejoin="round" d="M12 4.5v15m7.5-7.5h-15"/>
             </svg>
@@ -190,7 +190,7 @@
         <!-- Top Toolbar -->
         <div class="pt-10 px-4 pb-2 border-b border-neutral-800/80 flex items-center justify-between bg-[#1c1c1e]/95 backdrop-blur" id="detailNavBar">
           <!-- Back Button -->
-          <button id="backToListBtn" class="apple-press flex items-center gap-1 text-orange-500 hover:text-orange-400 text-sm font-semibold">
+          <button id="backToListBtn" class="apple-press flex items-center gap-1 text-[#3a3a3c] hover:text-neutral-700 text-sm font-semibold">
             <svg class="w-5 h-5 stroke-current fill-none stroke-[2.5]" viewBox="0 0 24 24">
               <path stroke-linecap="round" stroke-linejoin="round" d="M15.75 19.5L8.25 12l7.5-7.5"/>
             </svg>
@@ -200,7 +200,7 @@
           <!-- Trailing Toolbar Buttons -->
           <div class="flex items-center gap-3">
             <!-- Settings button (Gear) with Apple Rotation Motion -->
-            <button id="openSettingsBtn" class="gear-rotate text-orange-500 hover:text-orange-400 p-1.5 rounded-full" title="Параметры заметки">
+            <button id="openSettingsBtn" class="gear-rotate text-[#3a3a3c] hover:text-neutral-700 p-1.5 rounded-full" title="Параметры заметки">
               <svg class="w-5 h-5 stroke-current fill-none stroke-[1.8]" viewBox="0 0 24 24">
                 <path stroke-linecap="round" stroke-linejoin="round" d="M9.594 3.94c.09-.542.56-.94 1.11-.94h2.593c.55 0 1.02.398 1.11.94l.213 1.281c.063.374.313.686.645.87.074.04.147.083.22.127.324.196.72.257 1.075.124l1.217-.456a1.125 1.125 0 011.37.49l1.296 2.247a1.125 1.125 0 01-.26 1.431l-1.003.827c-.293.24-.438.613-.431.992a6.759 6.759 0 010 .255c-.007.378.138.75.43.99l1.005.828c.424.35.534.954.26 1.43l-1.298 2.247a1.125 1.125 0 01-1.369.491l-1.217-.456c-.355-.133-.75-.072-1.076.124a6.57 6.57 0 01-.22.128c-.331.183-.581.495-.644.869l-.213 1.28c-.09.543-.56.941-1.11.941h-2.594c-.55 0-1.02-.398-1.11-.94l-.213-1.281c-.062-.374-.312-.686-.644-.869a6.52 6.52 0 01-.22-.127c-.325-.196-.72-.257-1.076-.124l-1.217.456a1.125 1.125 0 01-1.369-.49l-1.297-2.247a1.125 1.125 0 01.26-1.431l1.004-.827c.292-.24.437-.613.43-.992a6.932 6.932 0 010-.255c.007-.378-.138-.75-.43-.99l-1.004-.828a1.125 1.125 0 01-.26-1.43l1.297-2.247a1.125 1.125 0 011.37-.491l1.216.456c.356.133.751.072 1.076-.124.072-.044.146-.087.22-.128.332-.183.582-.495.644-.869l.214-1.281z"/>
                 <circle cx="12" cy="12" r="3"/>
@@ -208,7 +208,7 @@
             </button>
 
             <!-- Share button -->
-            <button id="shareBtn" class="apple-press text-orange-500 hover:text-orange-400 p-1.5" title="Поделиться">
+            <button id="shareBtn" class="apple-press text-[#3a3a3c] hover:text-neutral-700 p-1.5" title="Поделиться">
               <svg class="w-5 h-5 stroke-current fill-none stroke-[2]" viewBox="0 0 24 24">
                 <path stroke-linecap="round" stroke-linejoin="round" d="M9 8.25H7.5a2.25 2.25 0 00-2.25 2.25v9a2.25 2.25 0 002.25 2.25h9a2.25 2.25 0 002.25-2.25v-9a2.25 2.25 0 00-2.25-2.25H15M12 3v12m0-12l-3 3m3-3l3 3"/>
               </svg>
@@ -222,7 +222,7 @@
             </button>
 
             <!-- Done Button -->
-            <button id="doneEditingBtn" class="apple-press text-orange-500 hover:text-orange-400 text-sm font-semibold pl-1">
+            <button id="doneEditingBtn" class="apple-press text-[#3a3a3c] hover:text-neutral-700 text-sm font-semibold pl-1">
               Готово
             </button>
           </div>
@@ -269,7 +269,7 @@
               <!-- Font Style Selector -->
               <div class="flex items-center justify-between">
                 <span class="text-neutral-200">Стиль шрифта</span>
-                <select id="fontStyleSelect" class="bg-[#2c2c2e] text-white text-xs font-medium px-2.5 py-1.5 rounded-lg outline-none border border-neutral-600 focus:border-orange-500 transition">
+                <select id="fontStyleSelect" class="bg-[#2c2c2e] text-white text-xs font-medium px-2.5 py-1.5 rounded-lg outline-none border border-neutral-600 focus:border-neutral-700 transition">
                   <option value="sans">Стандартный</option>
                   <option value="serif">С засечками</option>
                   <option value="mono">Моноширинный</option>
@@ -282,7 +282,7 @@
                   <span class="text-neutral-300">Размер шрифта</span>
                   <span id="fontSizeDisplay" class="text-neutral-400 font-mono font-medium">17 пт</span>
                 </div>
-                <input id="fontSizeSlider" type="range" min="14" max="28" value="17" class="w-full accent-orange-500 cursor-pointer">
+                <input id="fontSizeSlider" type="range" min="14" max="28" value="17" class="w-full accent-[#3a3a3c] cursor-pointer">
               </div>
 
               <!-- Read Only Toggle -->
@@ -291,7 +291,7 @@
                   <div class="text-neutral-200 text-xs font-medium">Режим чтения</div>
                   <div class="text-[11px] text-neutral-400">Защита от случайных правок</div>
                 </div>
-                <input id="readOnlyToggle" type="checkbox" class="w-5 h-5 accent-orange-500 rounded cursor-pointer transition">
+                <input id="readOnlyToggle" type="checkbox" class="w-5 h-5 accent-[#3a3a3c] rounded cursor-pointer transition">
               </div>
             </div>
           </div>
@@ -302,7 +302,7 @@
             <div class="bg-[#1c1c1e] rounded-2xl divide-y divide-neutral-800 border border-neutral-700/40">
               <button id="copyAllTextBtn" class="apple-row w-full px-3.5 py-3 flex items-center justify-between text-neutral-200 rounded-t-2xl text-left">
                 <span class="flex items-center gap-2">
-                  <svg class="w-4 h-4 text-orange-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7v8a2 2 0 002 2h6M8 7V5a2 2 0 012-2h4.586a1 1 0 01.707.293l4.414 4.414a1 1 0 01.293.707V15a2 2 0 01-2 2h-2M8 7H6a2 2 0 00-2 2v10a2 2 0 002 2h8a2 2 0 002-2v-2"/></svg>
+                  <svg class="w-4 h-4 text-[#3a3a3c]" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7v8a2 2 0 002 2h6M8 7V5a2 2 0 012-2h4.586a1 1 0 01.707.293l4.414 4.414a1 1 0 01.293.707V15a2 2 0 01-2 2h-2M8 7H6a2 2 0 00-2 2v10a2 2 0 002 2h8a2 2 0 002-2v-2"/></svg>
                   Скопировать весь текст
                 </span>
                 <span id="copyToast" class="text-xs text-green-400 font-medium hidden">Скопировано!</span>
@@ -310,10 +310,10 @@
 
               <button id="cleanWhitespaceBtn" class="apple-row w-full px-3.5 py-3 flex items-center justify-between text-neutral-200 rounded-b-2xl text-left">
                 <span class="flex items-center gap-2">
-                  <svg class="w-4 h-4 text-orange-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
+                  <svg class="w-4 h-4 text-[#3a3a3c]" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
                   Исправить ошибки в тексте
                 </span>
-                <span id="fixErrorsNotice" class="text-xs text-orange-400 font-medium hidden">Скоро настроим</span>
+                <span id="fixErrorsNotice" class="text-xs text-neutral-700 font-medium hidden">Скоро настроим</span>
               </button>
             </div>
           </div>
@@ -451,7 +451,7 @@
             <div onclick="openNote('${note.id}')" class="apple-row p-3.5 hover:bg-neutral-800/40 cursor-pointer flex items-start justify-between group">
               <div class="flex-1 min-w-0 pr-3">
                 <div class="flex items-center gap-1.5">
-                  ${note.isPinned ? '<span class="text-orange-500 text-xs">📌</span>' : ''}
+                  ${note.isPinned ? '<span class="text-[#3a3a3c] text-xs">📌</span>' : ''}
                   <span class="font-semibold text-sm text-[var(--text-primary)] truncate">${escapeHtml(noteTitle)}</span>
                 </div>
                 <div class="flex items-center gap-2 text-xs text-[var(--text-secondary)] mt-1 truncate">
@@ -527,7 +527,7 @@
       noteTextarea.readOnly = settings.readOnly;
       readOnlyToggle.checked = settings.readOnly;
       if (settings.readOnly) {
-        wordCharStats.innerHTML = `<span class="text-orange-500 font-semibold">🔒 Только чтение</span>`;
+        wordCharStats.innerHTML = `<span class="text-[#3a3a3c] font-semibold">🔒 Только чтение</span>`;
       } else {
         const text = noteTextarea.value;
         const chars = text.length;
@@ -694,7 +694,7 @@
         document.body.className = "bg-neutral-900 text-neutral-100 flex flex-col items-center justify-center min-h-screen p-4 sm:p-6 transition-colors duration-300";
         screen.className = "relative w-full h-full bg-[#1c1c1e] text-white rounded-[42px] overflow-hidden flex flex-col transition-colors duration-300";
         if (listTitleText) listTitleText.className = "text-[32px] font-bold tracking-tight text-white";
-        if (searchInput) searchInput.className = "w-full bg-[#2c2c2e] text-sm text-white placeholder-neutral-400 rounded-xl pl-9 pr-3 py-2 outline-none focus:ring-1 focus:ring-orange-500 transition duration-200";
+        if (searchInput) searchInput.className = "w-full bg-[#2c2c2e] text-sm text-white placeholder-neutral-400 rounded-xl pl-9 pr-3 py-2 outline-none focus:ring-1 focus:ring-neutral-700 transition duration-200";
         if (listBottomBar) listBottomBar.className = "h-16 border-t border-neutral-800/80 px-6 flex items-center justify-center bg-[#1c1c1e]/90 backdrop-blur";
         
         detailView.className = "screen-view detail-hidden-right absolute inset-0 z-20 bg-[#1c1c1e] text-white flex flex-col h-full";
@@ -706,7 +706,7 @@
         settingsSheet.style.backgroundColor = '#2c2c2e';
         settingsSheet.style.color = '#ffffff';
         if (sheetHeaderTitle) sheetHeaderTitle.className = "text-base font-bold text-white";
-        if (fontStyleSelect) fontStyleSelect.className = "bg-[#2c2c2e] text-white text-xs font-medium px-2.5 py-1.5 rounded-lg outline-none border border-neutral-600 focus:border-orange-500 transition";
+        if (fontStyleSelect) fontStyleSelect.className = "bg-[#2c2c2e] text-white text-xs font-medium px-2.5 py-1.5 rounded-lg outline-none border border-neutral-600 focus:border-neutral-700 transition";
 
         document.querySelectorAll('#settingsSheet .bg-\\[\\#1c1c1e\\], #settingsSheet .bg-white').forEach(el => {
           if (el.classList.contains('divide-y') || el.classList.contains('divide-neutral-200') || el.classList.contains('divide-neutral-800')) {
@@ -730,7 +730,7 @@
         document.body.className = "bg-[#e5e5ea] text-black flex flex-col items-center justify-center min-h-screen p-4 sm:p-6 transition-colors duration-300";
         screen.className = "relative w-full h-full bg-[#f2f2f7] text-black rounded-[42px] overflow-hidden flex flex-col transition-colors duration-300";
         if (listTitleText) listTitleText.className = "text-[32px] font-bold tracking-tight text-black";
-        if (searchInput) searchInput.className = "w-full bg-[#e3e3e8] text-sm text-black placeholder-neutral-500 rounded-xl pl-9 pr-3 py-2 outline-none focus:ring-1 focus:ring-orange-500 transition duration-200";
+        if (searchInput) searchInput.className = "w-full bg-[#e3e3e8] text-sm text-black placeholder-neutral-500 rounded-xl pl-9 pr-3 py-2 outline-none focus:ring-1 focus:ring-neutral-700 transition duration-200";
         if (listBottomBar) listBottomBar.className = "h-16 border-t border-neutral-200/80 px-6 flex items-center justify-center bg-[#f2f2f7]/90 backdrop-blur";
         
         detailView.className = "screen-view detail-hidden-right absolute inset-0 z-20 bg-white text-black flex flex-col h-full";
@@ -742,7 +742,7 @@
         settingsSheet.style.backgroundColor = '#f2f2f7';
         settingsSheet.style.color = '#111827';
         if (sheetHeaderTitle) sheetHeaderTitle.className = "text-base font-bold text-neutral-900";
-        if (fontStyleSelect) fontStyleSelect.className = "bg-white text-neutral-900 text-xs font-medium px-2.5 py-1.5 rounded-lg outline-none border border-neutral-300 focus:border-orange-500 transition";
+        if (fontStyleSelect) fontStyleSelect.className = "bg-white text-neutral-900 text-xs font-medium px-2.5 py-1.5 rounded-lg outline-none border border-neutral-300 focus:border-neutral-700 transition";
 
         document.querySelectorAll('#settingsSheet .bg-\\[\\#1c1c1e\\], #settingsSheet .bg-white').forEach(el => {
           if (el.classList.contains('divide-y') || el.classList.contains('divide-neutral-200') || el.classList.contains('divide-neutral-800')) {

@@ -63,7 +63,7 @@ struct NoteDetailView: View {
                 HStack {
                     if isReadOnly {
                         Label("Только чтение", systemImage: "lock.fill")
-                            .foregroundColor(.orange)
+                            .foregroundColor(Color(red: 0.23, green: 0.23, blue: 0.24))
                     } else {
                         Text("\(note.wordCount) слов, \(note.characterCount) симв.")
                     }
@@ -120,7 +120,7 @@ struct NoteDetailView: View {
                 }
             }
         }
-        .tint(.orange)
+        .tint(Color(red: 0.23, green: 0.23, blue: 0.24))
         .sheet(isPresented: $showingShareSheet) {
             if let note = currentNote {
                 ShareSheet(activityItems: [note.text])
