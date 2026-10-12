@@ -79,7 +79,9 @@ struct NotesListView: View {
                 Button {
                     guard let note = viewModel.createNote() else { return }
                     if #available(iOS 16.0, *) {
-                        path.append(note.id)
+                        withAnimation(.spring(response: 0.32, dampingFraction: 0.72)) {
+                            path.append(note.id)
+                        }
                     } else {
                         activeNoteId = note.id
                         navigateToDetail = true
@@ -87,12 +89,15 @@ struct NotesListView: View {
                 } label: {
                     Image(systemName: "plus")
                         .font(.title2.weight(.semibold))
+                        .padding(8)
                 }
+                .buttonStyle(AppleSpringButtonStyle(scale: 0.88))
                 .disabled(!viewModel.canEdit)
                 .accessibilityLabel("Создать заметку")
                 Spacer()
             }
         }
+        .animation(.spring(response: 0.35, dampingFraction: 0.8), value: viewModel.notes)
         .tint(.orange)
     }
 

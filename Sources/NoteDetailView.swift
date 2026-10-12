@@ -84,13 +84,13 @@ struct NoteDetailView: View {
         .toolbar {
             ToolbarItemGroup(placement: .navigationBarTrailing) {
                 if let note = currentNote {
-                    // Кнопка расширенных настроек (по умолчанию всё скрыто в ней)
                     Button {
                         viewModel.flush()
                         showingSettingsSheet = true
                     } label: {
                         Image(systemName: "gearshape")
                     }
+                    .buttonStyle(AppleSpringButtonStyle())
                     .accessibilityLabel("Параметры заметки")
 
                     Button {
@@ -99,6 +99,7 @@ struct NoteDetailView: View {
                     } label: {
                         Image(systemName: "square.and.arrow.up")
                     }
+                    .buttonStyle(AppleSpringButtonStyle())
                     .accessibilityLabel("Поделиться заметкой")
                     .disabled(note.text.isEmpty)
 
@@ -107,6 +108,7 @@ struct NoteDetailView: View {
                     } label: {
                         Image(systemName: "trash").foregroundColor(.red)
                     }
+                    .buttonStyle(AppleSpringButtonStyle())
                     .accessibilityLabel("Удалить заметку")
                 }
                 if isFocused {
