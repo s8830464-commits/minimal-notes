@@ -9,7 +9,7 @@ struct NoteSettingsView: View {
     @Binding var isReadOnly: Bool
 
     let note: Note?
-    let onFormatText: () -> Void
+    let onFixErrors: () -> Void
     let onCopyAll: () -> Void
 
     @State private var showCopiedNotice = false
@@ -69,9 +69,9 @@ struct NoteSettingsView: View {
                     }
 
                     Button {
-                        onFormatText()
+                        onFixErrors()
                     } label: {
-                        Label("Убрать лишние пробелы", systemImage: "wand.and.stars")
+                        Label("Исправить ошибки в тексте", systemImage: "text.badge.checkmark")
                     }
                 }
 

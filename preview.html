@@ -249,9 +249,10 @@
 
               <button id="cleanWhitespaceBtn" class="w-full px-3.5 py-2.5 flex items-center justify-between text-neutral-200 hover:bg-neutral-800/50 transition rounded-b-2xl text-left">
                 <span class="flex items-center gap-2">
-                  <svg class="w-4 h-4 text-orange-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 3v4M3 5h4M6 17v4m-2-2h4m5-16l2.286 6.857L21 12l-5.714 2.143L13 21l-2.286-6.857L5 12l5.714-2.143L13 3z"/></svg>
-                  Убрать лишние пробелы
+                  <svg class="w-4 h-4 text-orange-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
+                  Исправить ошибки в тексте
                 </span>
+                <span id="fixErrorsNotice" class="text-xs text-orange-400 font-medium hidden">Скоро настроим</span>
               </button>
             </div>
           </div>
@@ -573,15 +574,10 @@
       });
     });
 
+    const fixErrorsNotice = document.getElementById('fixErrorsNotice');
     cleanWhitespaceBtn.addEventListener('click', () => {
-      const cleaned = noteTextarea.value
-        .split('\n')
-        .map(l => l.trim())
-        .join('\n')
-        .replace(/\n{3,}/g, '\n\n')
-        .trim();
-      noteTextarea.value = cleaned;
-      updateStats();
+      fixErrorsNotice.classList.remove('hidden');
+      setTimeout(() => fixErrorsNotice.classList.add('hidden'), 1500);
     });
 
     // Theme Toggle (Light / Dark)

@@ -137,7 +137,7 @@ struct NoteDetailView: View {
                 fontDesign: $fontDesign,
                 isReadOnly: $isReadOnly,
                 note: currentNote,
-                onFormatText: formatText,
+                onFixErrors: fixErrors,
                 onCopyAll: copyAllText
             )
         }
@@ -177,13 +177,7 @@ struct NoteDetailView: View {
         }
     }
 
-    private func formatText() {
-        guard let note = currentNote else { return }
-        let lines = note.text.components(separatedBy: .newlines)
-        let cleaned = lines
-            .map { $0.trimmingCharacters(in: .whitespaces) }
-            .joined(separator: "\n")
-            .trimmingCharacters(in: .whitespacesAndNewlines)
-        viewModel.updateNote(id: noteId, text: cleaned)
+    private func fixErrors() {
+        // Заготовка для исправления ошибок в тексте, которую мы настроим позже
     }
 }
