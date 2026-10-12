@@ -85,10 +85,12 @@ struct NotesListView: View {
                         navigateToDetail = true
                     }
                 } label: {
-                    Image(systemName: "square.and.pencil").font(.title3)
+                    Image(systemName: "plus")
+                        .font(.title2.weight(.semibold))
                 }
                 .disabled(!viewModel.canEdit)
                 .accessibilityLabel("Создать заметку")
+                Spacer()
             }
         }
         .tint(.orange)
